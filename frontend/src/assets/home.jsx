@@ -1,11 +1,12 @@
-import MyGooeyNav from './partials/nav';
+import Navbar from './partials/nav';
 import TagLine from './partials/tagline';
 import Tag from './partials/tag';
+import React from 'react';
 
 export default function Home() {
   return (
   <>
-  <MyGooeyNav />
+  <Navbar />
   < TagLine/>
   <Tag/>
   </>)
