@@ -30,7 +30,7 @@ export default function DecryptedText({
   className = '',
   parentClassName = '',
   encryptedClassName = '',
-  animateOn = 'hover',
+  animateOn = 'mount',
   ...props
 }) {
   const [displayText, setDisplayText] = useState(text);
@@ -164,7 +164,7 @@ export default function DecryptedText({
   ])
 
   useEffect(() => {
-    if (animateOn !== 'view') return
+    if (animateOn !== 'view'){
 
     const observerCallback = (entries) => {
       entries.forEach((entry) => {
@@ -191,6 +191,10 @@ export default function DecryptedText({
       if (currentRef) {
         observer.unobserve(currentRef)
       }
+    }
+  }else if (animateOn === 'mount') {
+      setIsHovering(true)
+      setHasAnimated(true)
     }
   }, [animateOn, hasAnimated])
 
