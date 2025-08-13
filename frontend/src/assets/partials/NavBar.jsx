@@ -1,16 +1,17 @@
-import GooeyNav from './GooeyNav'
-import React from 'react'
+import GooeyNav from './GooeyNav';
+import './custom.css';
+import React from 'react';
 
 // update with your own items
 const items = [
   { label: "Home", href: "#" },
   { label: "About", href: "#" },
-  { label: "Contact", href: "#" },
+  { label: "Login", href: "#" },
+  { label: "Register", href: "#" }
 ];
 
-export default function NavBar(){
-return(
-  <>
+export default function Navbar() {
+  return (
 <div style={{ height: '600px', position: 'relative' }}>
   <GooeyNav
     items={items}
@@ -23,5 +24,5 @@ return(
     colors={[1, 2, 3, 1, 2, 3, 1, 4]}
   />
 </div>
-</>
-)}
+)
+}

@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import "./custom.css";

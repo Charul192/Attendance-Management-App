@@ -1,6 +1,7 @@
+import React from 'react';
 import TrueFocus from './TrueFocus';
 
-export default function TagLine() {
+export default function Logo() {
   return (
 <TrueFocus 
 sentence="Bunk Smart"

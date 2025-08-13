@@ -3,14 +3,8 @@
 }
 
 .gooey-nav-container {
-  position: fixed;
-  top: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: auto; /* or max-content */
+  position: relative;
 }
-
-
 
 .gooey-nav-container nav {
   display: flex;
@@ -20,7 +14,6 @@
 
 .gooey-nav-container nav ul {
   display: flex;
-  flex-wrap: wrap;
   gap: 2em;
   list-style: none;
   padding: 0 1em;
@@ -208,11 +201,9 @@
   }
 }
 
-@media (max-width: 600px) {
-  .gooey-nav-container nav ul {
-    gap: 0.8em;
-    font-size: 0.9rem;
-  }
+.darkveil-canvas {
+  width: 100%;
+  height: 100%;
 }
 
 .focus-container {

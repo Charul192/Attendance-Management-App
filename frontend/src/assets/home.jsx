@@ -1,13 +1,14 @@
-import Navbar from './partials/nav';
-import TagLine from './partials/tagline';
-import Tag from './partials/tag';
+import Navbar from './partials/NavBar'; // Ensure exact filename case
+import Logo from './partials/Logo';
 import React from 'react';
+import Tag from './partials/tag';
 
 export default function Home() {
   return (
-  <>
-  <Navbar />
-  < TagLine/>
-  <Tag/>
-  </>)
+    <>
+      <Navbar />
+      <Logo/>
+      <Tag/>
+    </>
+  );
 }

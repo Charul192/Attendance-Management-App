@@ -1,4 +1,5 @@
-import { useRef, useEffect, useState, React } from "react";
+import React from 'react';
+import { useRef, useEffect, useState } from "react";
 import "./custom.css";
 
 const GooeyNav = ({
