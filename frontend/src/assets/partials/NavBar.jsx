@@ -4,10 +4,10 @@ import React from 'react';
 
 // update with your own items
 const items = [
-  { label: "Home", href: "#" },
-  { label: "About", href: "#" },
-  { label: "Login", href: "#" },
-  { label: "Register", href: "#" }
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Login", href: "/login" },
+  { label: "Register", href: "/register" }
 ];
 
 export default function Navbar() {
