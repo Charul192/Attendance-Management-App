@@ -1,16 +1,17 @@
 import React from 'react';
 import { useRef, useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./custom.css";
 
 const GooeyNav = ({
   items,
   animationTime = 600,
-  particleCount = 15, 
+  particleCount = 15,
   particleDistances = [90, 10],
   particleR = 100,
   timeVariance = 300,
   colors = [1, 2, 3, 1, 2, 3, 1, 4],
-  initialActiveIndex = 0,   
+  initialActiveIndex = 0,
 }) => {
   const containerRef = useRef(null);
   const navRef = useRef(null);
@@ -50,8 +51,8 @@ const GooeyNav = ({
       const p = createParticle(i, t, d, r);
       element.classList.remove("active");
 
-      setTimeout(() => {  
-        const particle = document.createElement("span");``
+      setTimeout(() => {
+        const particle = document.createElement("span"); ``
         const point = document.createElement("span");
         particle.classList.add("particle");
         particle.style.setProperty("--start-x", `${p.start[0]}px`);
@@ -100,40 +101,38 @@ const GooeyNav = ({
     textRef.current.innerText = element.innerText;
   };
 
-  const handleClick = (e, index) => {
-    const liEl = e.currentTarget;
-    if (activeIndex === index) return;
+  const navigate = useNavigate();
 
-    setActiveIndex(index);
-    updateEffectPosition(liEl);
+  const handleClick = (e, index, href) => {
+  e.preventDefault();
+  setActiveIndex(index);
+  updateEffectPosition(e.currentTarget);
 
-    if (filterRef.current) {
-      const particles = filterRef.current.querySelectorAll(".particle");
-      particles.forEach((p) => filterRef.current.removeChild(p));
-    }
+  if (filterRef.current) {
+    const particles = filterRef.current.querySelectorAll(".particle");
+    particles.forEach((p) => filterRef.current.removeChild(p));
+  }
 
-    if (textRef.current) {
-      textRef.current.classList.remove("active");
+  if (textRef.current) {
+    textRef.current.classList.remove("active");
+    void textRef.current.offsetWidth;
+    textRef.current.classList.add("active");
+  }
 
-      void textRef.current.offsetWidth;
-      textRef.current.classList.add("active");
-    }
+  if (filterRef.current) {
+    makeParticles(filterRef.current);
+  }
 
-    if (filterRef.current) {
-      makeParticles(filterRef.current);
-    }
-  };
+  setTimeout(() => {
+    navigate(href);
+  }, animationTime);
+};
 
-  const handleKeyDown = (e, index) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      const liEl = e.currentTarget.parentElement;
-      if (liEl) {
-        handleClick({ currentTarget: liEl }, index);
-      }
-    }
-  };
-
+const handleKeyDown = (e, index, href) => {
+  if (e.key === "Enter" || e.key === " ") {
+    handleClick(e, index, href);
+  }
+};
   useEffect(() => {
     if (!navRef.current || !containerRef.current) return;
     const activeLi = navRef.current.querySelectorAll("li")[activeIndex];
@@ -153,7 +152,14 @@ const GooeyNav = ({
     resizeObserver.observe(containerRef.current);
     return () => resizeObserver.disconnect();
   }, [activeIndex]);
+  const location = useLocation();
 
+useEffect(() => {
+  const idx = items.findIndex(item => item.href === location.pathname);
+  if (idx !== -1 && idx !== activeIndex) {
+    setActiveIndex(idx);
+  }
+}, [location.pathname, items]);
   return (
     <div className="gooey-nav-container" ref={containerRef}>
       <nav>
@@ -165,8 +171,10 @@ const GooeyNav = ({
             >
               <a
                 href={item.href}
-                onClick={(e) => handleClick(e, index)}
-                onKeyDown={(e) => handleKeyDown(e, index)}
+                tabIndex={0}
+                onClick={(e) => handleClick(e, index, item.href)}
+                onKeyDown={(e) => handleKeyDown(e, index, item.href)}
+                onFocus={() => setActiveIndex(index)}
               >
                 {item.label}
               </a>
