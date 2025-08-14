@@ -5,12 +5,12 @@ import "./custom.css";
 const GooeyNav = ({
   items,
   animationTime = 600,
-  particleCount = 15,
+  particleCount = 15, 
   particleDistances = [90, 10],
   particleR = 100,
   timeVariance = 300,
   colors = [1, 2, 3, 1, 2, 3, 1, 4],
-  initialActiveIndex = 0,
+  initialActiveIndex = 0,   
 }) => {
   const containerRef = useRef(null);
   const navRef = useRef(null);
@@ -50,8 +50,8 @@ const GooeyNav = ({
       const p = createParticle(i, t, d, r);
       element.classList.remove("active");
 
-      setTimeout(() => {
-        const particle = document.createElement("span");
+      setTimeout(() => {  
+        const particle = document.createElement("span");``
         const point = document.createElement("span");
         particle.classList.add("particle");
         particle.style.setProperty("--start-x", `${p.start[0]}px`);
