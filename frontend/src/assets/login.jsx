@@ -1,7 +1,14 @@
-import React from "react";
+import NavBar from './partials/NavBar'; // Ensure exact filename case
+import Logo from './partials/Logo';
+import React from 'react';
+import Tag from './partials/tag';
 
-export default function Login(){
-    return(
-        <></>
-    )
+export default function Login() {
+  return (
+    <>
+      <NavBar />
+      <Logo/>
+      <Tag/>
+    </>
+  );
 }

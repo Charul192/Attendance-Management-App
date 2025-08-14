@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 // import BackGround from './assets/partials/background';
 import About from './assets/about.jsx'
 import Login from './assets/login.jsx';
+import Register from './assets/register.jsx';
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
     </Routes>
     </BrowserRouter>
     </>

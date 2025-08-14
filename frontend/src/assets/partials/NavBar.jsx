@@ -8,8 +8,8 @@ export default function NavBar() {
       items={[
         { label: 'Home', href: '/' },
         { label: 'About', href: '/about' },
-        { label: 'Services', href: '/services' },
-        { label: 'Contact', href: '/contact' }
+        { label: 'Login', href: '/login' },
+        { label: 'Register', href: '/register' }
       ]}
       activeHref="/"
       className="custom-nav"
