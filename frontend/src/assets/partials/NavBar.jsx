@@ -28,7 +28,7 @@ export default function Navbar() {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    background: '#000', // <-- black background
+    background: '#242424', // <-- black background
     boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
     overflow: 'hidden',
   }}>
