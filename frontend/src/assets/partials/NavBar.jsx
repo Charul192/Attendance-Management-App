@@ -1,28 +1,23 @@
-import GooeyNav from './GooeyNav';
-import './custom.css';
+import PillNav from './PillNav';
+// import Logo from './ChatGPT-Image-Aug-14_-2025_-10_11_33-PM.svg';
 import React from 'react';
 
-// update with your own items
-const items = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Login", href: "/login" },
-  { label: "Register", href: "/register" }
-];
-
-export default function Navbar() {
+export default function NavBar() {
   return (
-<div style={{ height: '600px', position: 'relative' }}>
-  <GooeyNav
-    items={items}
-    particleCount={15}
-    particleDistances={[90, 10]}
-    particleR={100}
-    initialActiveIndex={0}
-    animationTime={600}
-    timeVariance={300}
-    colors={[1, 2, 3, 1, 2, 3, 1, 4]}
-  />
-</div>
-)
+    <PillNav
+      items={[
+        { label: 'Home', href: '/' },
+        { label: 'About', href: '/about' },
+        { label: 'Services', href: '/services' },
+        { label: 'Contact', href: '/contact' }
+      ]}
+      activeHref="/"
+      className="custom-nav"
+      ease="power2.easeOut"
+      baseColor="#242424"
+      pillColor="#3A3A3A"
+      hoveredPillTextColor="#ffffff"
+      pillTextColor="#FFFFFF"
+    />
+  );
 }
