@@ -1,0 +1,358 @@
+/* SignUp.css - matches the SignIn dark neon glass style */
+:root{
+  --bg-1: #070608;
+  --bg-2: #0f0f14;
+  --muted: #9aa3b2;
+  --accent: #ff4ecd;
+  --accent-2: #5be3ff;
+}
+
+.signup-page{
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(1200px 600px at 10% 10%, rgba(91,227,255,0.03), transparent),
+              radial-gradient(900px 400px at 90% 90%, rgba(255,78,205,0.03), transparent),
+              linear-gradient(180deg, var(--bg-1), var(--bg-2));
+  color: #e6eef8;
+  padding: 48px 20px;
+  overflow: hidden;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+}
+
+.bg-grid{
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,0.01) 1px, transparent 1px);
+  background-size: 48px 48px, 48px 48px;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+.neon-orb{
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  filter: blur(48px);
+  background: radial-gradient(circle at 30% 40%, rgba(91,227,255,0.12), transparent 20%),
+              radial-gradient(circle at 70% 60%, rgba(255,78,205,0.12), transparent 20%);
+  transform: translateY(-6vh) translateX(6vw);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.signup-wrap{
+  width: min(860px, 92%);
+  max-width: 920px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius: 16px;
+  padding: 34px;
+  backdrop-filter: blur(8px) saturate(140%);
+  box-shadow: 0 6px 40px rgba(2,2,8,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.03);
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 24px;
+  align-items: center;
+}
+
+.signup-header{
+  padding: 18px 12px;
+}
+.brand-logo{
+  width: 84px;
+  height: auto;
+  display: block;
+  margin-bottom: 8px;
+  border-radius: 8px;
+}
+.brand{
+  font-size: 26px;
+  margin: 0 0 8px;
+  color: white;
+}
+.brand + .tag{ color: var(--muted); margin-top: 0; }
+
+.signup-form{
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.input-group{ position: relative; }
+.float-label{
+  display: block;
+  position: relative;
+  padding-top: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  transition: color 0.25s ease;
+}
+.float-label input{
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.03);
+  color: #eaf6ff;
+  outline: none;
+  font-size: 15px;
+  transition: box-shadow 0.16s ease, transform 0.12s ease;
+}
+.float-label.filled { color: var(--accent-2); }
+.float-label input:focus {
+  box-shadow: 0 8px 28px rgba(91,227,255,0.06), inset 0 1px 0 rgba(255,255,255,0.02);
+  transform: translateY(-1px);
+  border-color: rgba(91,227,255,0.18);
+}
+
+.error-box{
+  background: linear-gradient(90deg, rgba(255,78,205,0.06), rgba(91,227,255,0.03));
+  color: #ffb3d9;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,78,205,0.08);
+  font-size: 14px;
+}
+
+.cta-btn{
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  border-radius: 12px;
+  padding: 12px 16px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  color: #0b0f12;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 40px rgba(91,227,255,0.08);
+  transition: transform 0.12s ease;
+}
+.cta-btn:disabled { opacity: 0.5; cursor: default; transform: none; filter: grayscale(0.2); }
+.cta-btn .glow{
+  position: absolute;
+  left: -40%;
+  top: -40%;
+  width: 180%;
+  height: 180%;
+  pointer-events: none;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.12), transparent 15%),
+              radial-gradient(circle at 70% 70%, rgba(255,255,255,0.06), transparent 20%);
+  mix-blend-mode: overlay;
+  transition: transform 0.4s ease;
+}
+.cta-btn:hover .glow{ transform: translateX(10%); }
+.cta-btn:active { transform: translateY(1px) scale(0.998); }
+
+.extras{ display:flex; gap: 12px; align-items:center; margin-top:6px; }
+.ghost-link{
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+}
+.ghost-link:hover { color: var(--accent-2); text-decoration: underline; }
+
+.signup-footer{ position: absolute; bottom: 22px; width: 100%; text-align:center; color: rgba(255,255,255,0.12); font-size:12px; z-index:1; }
+
+@media (max-width: 920px){
+  .signup-wrap{ grid-template-columns: 1fr; padding: 20px; gap: 18px; }
+  .brand{ font-size: 22px; }
+  .neon-orb{ width: 300px; height: 300px; transform: translateY(-8vh) translateX(20vw); }
+}
+
+/* SignIn.css - dark neon/glass look, tweak colors to match your theme */
+
+:root{
+  --bg-1: #070608;
+  --bg-2: #0f0f14;
+  --glass: rgba(255,255,255,0.04);
+  --accent: #ff4ecd;
+  --accent-2: #5be3ff;
+  --muted: #9aa3b2;
+  --pill-bg: #242424;
+  --pill-text: #fff;
+}
+
+/* page container */
+.signin-page{
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(1200px 600px at 10% 10%, rgba(91,227,255,0.03), transparent),
+              radial-gradient(900px 400px at 90% 90%, rgba(255,78,205,0.03), transparent),
+              linear-gradient(180deg, var(--bg-1), var(--bg-2));
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color: #e6eef8;
+  overflow: hidden;
+  padding: 48px 20px;
+}
+
+/* subtle background grid */
+.bg-grid{
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,0.01) 1px, transparent 1px);
+  background-size: 48px 48px, 48px 48px;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+/* glowing orb */
+.neon-orb{
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  filter: blur(48px);
+  background: radial-gradient(circle at 30% 40%, rgba(91,227,255,0.12), transparent 20%),
+              radial-gradient(circle at 70% 60%, rgba(255,78,205,0.12), transparent 20%);
+  transform: translateY(-6vh) translateX(6vw);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+/* form wrap (glass card) */
+.signin-wrap{
+  width: min(860px, 92%);
+  max-width: 920px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius: 16px;
+  padding: 34px;
+  backdrop-filter: blur(8px) saturate(140%);
+  box-shadow: 0 6px 40px rgba(2,2,8,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.03);
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 24px;
+  align-items: center;
+}
+
+/* header on the left */
+.signin-header{
+  padding: 18px 12px 18px 12px;
+}
+.brand{
+  font-size: 28px;
+  margin: 0 0 8px;
+  letter-spacing: 0.6px;
+  color: white;
+}
+.brand span{ color: var(--accent); margin-left: 8px; opacity: 0.95; }
+.tag{
+  margin: 0;
+  color: var(--muted);
+}
+
+/* form on right column */
+.signin-form{
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* floating label style */
+.input-group{ position: relative; }
+.float-label{
+  display: block;
+  position: relative;
+  padding-top: 10px;
+  color: var(--muted);
+  font-size: 13px;
+  transition: color 0.25s ease;
+}
+.float-label input{
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 14px 14px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.03);
+  color: #eaf6ff;
+  outline: none;
+  font-size: 15px;
+  transition: box-shadow 0.16s ease, transform 0.12s ease;
+}
+.float-label.filled { color: var(--accent-2); }
+.float-label input:focus {
+  box-shadow: 0 8px 28px rgba(91,227,255,0.06), inset 0 1px 0 rgba(255,255,255,0.02);
+  transform: translateY(-1px);
+  border-color: rgba(91,227,255,0.18);
+}
+
+/* error box */
+.error-box{
+  background: linear-gradient(90deg, rgba(255,78,205,0.06), rgba(91,227,255,0.03));
+  color: #ffb3d9;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,78,205,0.08);
+  font-size: 14px;
+}
+
+/* CTA with neon glow */
+.cta-btn{
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  border-radius: 12px;
+  padding: 12px 16px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  color: #0b0f12;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 40px rgba(91,227,255,0.08);
+  transition: transform 0.12s ease;
+}
+.cta-btn:disabled { opacity: 0.5; cursor: default; transform: none; filter: grayscale(0.2); }
+.cta-btn .glow{
+  position: absolute;
+  left: -40%;
+  top: -40%;
+  width: 180%;
+  height: 180%;
+  pointer-events: none;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.12), transparent 15%),
+              radial-gradient(circle at 70% 70%, rgba(255,255,255,0.06), transparent 20%);
+  mix-blend-mode: overlay;
+  transition: transform 0.4s ease;
+}
+.cta-btn:hover .glow{ transform: translateX(10%); }
+.cta-btn:active { transform: translateY(1px) scale(0.998); }
+
+/* extras */
+.extras{ display:flex; gap: 12px; align-items:center; margin-top:6px; }
+.ghost-link{
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+}
+.ghost-link:hover { color: var(--accent-2); text-decoration: underline; }
+
+/* footer */
+.signin-footer{ position: absolute; bottom: 22px; width: 100%; text-align:center; color: rgba(255,255,255,0.12); font-size:12px; z-index:1; }
+
+/* responsive */
+@media (max-width: 920px){
+  .signin-wrap{ grid-template-columns: 1fr; padding: 20px; gap: 18px; }
+  .brand{ font-size: 24px; }
+  .neon-orb{ width: 300px; height: 300px; transform: translateY(-8vh) translateX(20vw); }
+}

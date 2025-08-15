@@ -1,21 +1,35 @@
-import PillNav from './PillNav';
-import React from 'react';
+import PillNav from "./PillNav";
+import React, {useState} from "react";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { app } from "./firebase.js";
+
+const auth = getAuth(app);
 
 export default function NavBar() {
-  const isLoggedIn = true; // change this based on your auth logic
+  const [isSignedUp, setIsSignedUp] = useState(false);
+  // const isLoggedIn = false; // change this based on your auth logic
   const fullName = "Kushagra Sharma"; // from user data
 
-  const navItems = isLoggedIn
+  const signupUser = () => {
+    createUserWithEmailAndPassword(
+      auth, 
+      "swati@gmail.com", 
+      "1234@ery"
+    ).then((value) => console.log(value));
+  };
+
+  const navItems = isSignedUp
     ? [
-        { label: 'Home', href: '/' },
-        { label: 'About', href: '/about' },
-        { label: fullName, href: '/:id' }
+        { label: "Home", href: "/" },
+        { label: "About", href: "/about" },
+        { label: fullName, href: "/:id" },
       ]
     : [
-        { label: 'Home', href: '/' },
-        { label: 'About', href: '/about' },
-        { label: 'Login', href: '/login' },
-        { label: 'Register', href: '/register' }
+        { label: "Home", href: "/" },
+        { label: "About", href: "/about" },
+        // { label: "Login", onClick: signupUser },
+        { label: "Login", href: "/login" },
+        { label: "SignUp", href: "/signup" },
       ];
 
   return (
