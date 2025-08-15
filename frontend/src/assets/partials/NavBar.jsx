@@ -1,21 +1,24 @@
 import PillNav from './PillNav';
 import React from 'react';
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function NavBar() {
-  const isLoggedIn = true; // change this based on your auth logic
-  const fullName = "Kushagra Sharma"; // from user data
+  const { user, loginWithRedirect, isAuthenticated, logout} = useAuth0();
+  const isLoggedIn = false; // change this based on your auth logic
+  // const fullName = "Kushagra Sharma"; // from user data
 
-  const navItems = isLoggedIn
+  console.log(user);
+
+  const navItems = isAuthenticated
     ? [
         { label: 'Home', href: '/' },
-        { label: 'About', href: '/about' },
-        { label: fullName, href: '/:id' }
+        { label: user.given_name, href: '/' },
+        { label: 'Logout' , onClick: () => logout() }
       ]
     : [
         { label: 'Home', href: '/' },
         { label: 'About', href: '/about' },
-        { label: 'Login', href: '/login' },
-        { label: 'Register', href: '/register' }
+        { label: 'Login', onClick: () => loginWithRedirect() }
       ];
 
   return (
