@@ -1,6 +1,6 @@
 // SignUp.jsx
 import React, { useState, useEffect, useRef } from "react";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { app } from "./partials/firebase.js"; // ensure this exports `app`
 import { useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
@@ -8,6 +8,7 @@ import "./custom.css";
 import logo from "./partials/ChatGPT Image Aug 14, 2025, 10_11_33 PM.png"; // replace with your actual logo path
 
 const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
@@ -18,6 +19,18 @@ export default function SignUp() {
   const wrapRef = useRef(null);
   const navigate = useNavigate();
   const [isSignedUp, setIsSignedUp] = useState(false);
+  const signupWithGoogle = () => {
+  signInWithPopup(auth, googleProvider)
+    .then((result) => {
+      console.log("Google signed in user:", result.user);
+      navigate("/"); // redirect after login
+    })
+    .catch((error) => {
+      console.error("Google sign-in error:", error);
+      setErr("Google sign-in failed. Please try again.");
+    });
+};
+
 
   useEffect(() => {
     if (wrapRef.current) {
@@ -130,6 +143,11 @@ export default function SignUp() {
           <button className="cta-btn" type="submit" disabled={loading}>
             <span className="glow" />
             {loading ? "Creating account..." : "Create account"}
+          </button>
+
+          <button className="cta-btn" type="button" onClick={signupWithGoogle}>
+            <span className="glow" />
+            Sign In with Google
           </button>
 
           <div className="extras">
