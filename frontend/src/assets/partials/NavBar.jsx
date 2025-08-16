@@ -1,36 +1,37 @@
 import PillNav from "./PillNav";
-import React, {useState} from "react";
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import React, { useState, useEffect } from "react";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { app } from "./firebase.js";
 
 const auth = getAuth(app);
 
 export default function NavBar() {
-  const [isSignedUp, setIsSignedUp] = useState(false);
-  // const isLoggedIn = false; // change this based on your auth logic
-  const fullName = "Kushagra Sharma"; // from user data
+  const [navItems, setNavItems] = useState([]);
 
-  const signupUser = () => {
-    createUserWithEmailAndPassword(
-      auth, 
-      "swati@gmail.com", 
-      "1234@ery"
-    ).then((value) => console.log(value));
-  };
+  useEffect(() => {
+    // subscribe to auth state
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      console.log(user);
+      if (user) {
+        setNavItems([
+          { label: "Home", href: "/" },
+          { label: "About", href: "/about" },
+          { label: user.displayName || "Profile", href: `/${user.uid}` }, // safer than /:id
+          { label: "Log Out", onClick: () => signOut(auth) },
+        ]);
+      } else {
+        setNavItems([
+          { label: "Home", href: "/" },
+          { label: "About", href: "/about" },
+          { label: "Login", href: "/login" },
+          { label: "SignUp", href: "/signup" },
+        ]);
+      }
+    });
 
-  const navItems = isSignedUp
-    ? [
-        { label: "Home", href: "/" },
-        { label: "About", href: "/about" },
-        { label: fullName, href: "/:id" },
-      ]
-    : [
-        { label: "Home", href: "/" },
-        { label: "About", href: "/about" },
-        // { label: "Login", onClick: signupUser },
-        { label: "Login", href: "/login" },
-        { label: "SignUp", href: "/signup" },
-      ];
+    // cleanup when component unmounts
+    return () => unsubscribe();
+  }, []); // ✅ dependency array goes here
 
   return (
     <PillNav

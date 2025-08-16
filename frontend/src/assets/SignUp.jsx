@@ -1,6 +1,12 @@
 // SignUp.jsx
 import React, { useState, useEffect, useRef } from "react";
-import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+  updateProfile,
+} from "firebase/auth";
 import { app } from "./partials/firebase.js"; // ensure this exports `app`
 import { useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
@@ -11,6 +17,7 @@ const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
 export default function SignUp() {
+  const [name, setName] = useState(""); // new
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -19,18 +26,18 @@ export default function SignUp() {
   const wrapRef = useRef(null);
   const navigate = useNavigate();
   const [isSignedUp, setIsSignedUp] = useState(false);
-  const signupWithGoogle = () => {
-  signInWithPopup(auth, googleProvider)
-    .then((result) => {
-      console.log("Google signed in user:", result.user);
-      navigate("/"); // redirect after login
-    })
-    .catch((error) => {
-      console.error("Google sign-in error:", error);
-      setErr("Google sign-in failed. Please try again.");
-    });
-};
 
+  const signupWithGoogle = () => {
+    signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        console.log("Google signed in user:", result.user);
+        navigate("/"); // redirect after login
+      })
+      .catch((error) => {
+        console.error("Google sign-in error:", error);
+        setErr("Google sign-in failed. Please try again.");
+      });
+  };
 
   useEffect(() => {
     if (wrapRef.current) {
@@ -48,7 +55,8 @@ export default function SignUp() {
     e.preventDefault();
     resetErrors();
 
-    if (!email || !password || !confirm) {
+    // validate name too
+    if (!name || !email || !password || !confirm) {
       setErr("Please fill all fields");
       return;
     }
@@ -64,12 +72,21 @@ export default function SignUp() {
     setLoading(true);
     try {
       const userCred = await createUserWithEmailAndPassword(auth, email, password);
+
+      // Set displayName on the created user
+      try {
+        await updateProfile(userCred.user, { displayName: name });
+        // optionally you can also update auth.currentUser, but userCred.user should be fine
+      } catch (profileErr) {
+        console.warn("Could not set displayName:", profileErr);
+        // don't fail the whole signup just because displayName update failed
+      }
+
       // success animation
       gsap.to(wrapRef.current, { scale: 0.995, duration: 0.06, yoyo: true, repeat: 1 });
       console.log("Signed up:", userCred.user);
-      // redirect to sign-in or dashboard
-      navigate("/");
-      setIsSignedUp("True");
+      setIsSignedUp(true);
+      navigate("/"); // redirect to dashboard/home
     } catch (error) {
       console.error(error);
       // Friendly error messages
@@ -99,6 +116,19 @@ export default function SignUp() {
         </header>
 
         <form className="signup-form" onSubmit={handleSubmit} noValidate>
+          <div className="input-group">
+            <label className={`float-label ${name ? "filled" : ""}`}>
+              Full name
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your full name"
+                autoComplete="name"
+              />
+            </label>
+          </div>
+
           <div className="input-group">
             <label className={`float-label ${email ? "filled" : ""}`}>
               Email
