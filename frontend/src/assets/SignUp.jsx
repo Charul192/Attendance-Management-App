@@ -1,4 +1,3 @@
-// SignUp.jsx (fixed)
 import React, { useState, useEffect, useRef } from "react";
 import {
   getAuth,
@@ -6,13 +5,23 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   updateProfile,
+  fetchSignInMethodsForEmail,
 } from "firebase/auth";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+  serverTimestamp,
+} from "firebase/firestore";
 import { app } from "./partials/firebase.js";
 import { useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
 import "./custom.css";
-// import logo from "./partials/ChatGPT Image Aug 14, 2025, 10_11_33 PM.png";
 
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
@@ -29,18 +38,38 @@ export default function SignUp() {
   const navigate = useNavigate();
   const [isSignedUp, setIsSignedUp] = useState(false);
 
-  const writeData = async (fullName, emailId) => {
-    if (!emailId) return; // safety
+  // CENTRALIZED write — writes to users/{uid} using setDoc(..., {merge:true})
+  const writeData = async (uid, fullName, email) => {
+    if (!uid || !email) {
+      console.warn("writeData called without uid/email", { uid, email });
+      return;
+    }
     try {
-      await addDoc(collection(firestore, "users"), {
-        FullName: fullName || "",
-        emailId: emailId,
-        createdAt: new Date().toISOString(),
-      });
+      const userRef = doc(firestore, "users", uid);
+      await setDoc(
+        userRef,
+        {
+          fullName: fullName || "",
+          email: email,
+          updatedAt: serverTimestamp(),
+          uid,
+        },
+        { merge: true } // don't overwrite existing other fields
+      );
     } catch (wErr) {
       console.error("writeData error:", wErr);
-      // optional: setErr("Could not save user data.");
+      throw wErr;
     }
+  };
+
+  // Helper: find legacy user doc by email (random-id records)
+  const findLegacyByEmail = async (emailToFind) => {
+    if (!emailToFind) return null;
+    const usersCol = collection(firestore, "users");
+    const q = query(usersCol, where("email", "==", emailToFind));
+    const snap = await getDocs(q);
+    if (snap.empty) return null;
+    return snap.docs[0]; // first legacy doc
   };
 
   const signupWithGoogle = async () => {
@@ -49,15 +78,43 @@ export default function SignUp() {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
-      console.log("Google signed in user:", user);
+      console.log("Google signed in user:", user.uid, user.email);
 
-      // write to Firestore (use displayName from Google user)
-      await writeData(user.displayName || "", user.email);
+      // 1) If users/{uid} exists -> just merge/update and continue
+      const userRef = doc(firestore, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        await writeData(user.uid, user.displayName || "", user.email || "");
+        navigate("/");
+        return;
+      }
 
-      navigate("/"); // redirect after login
+      // 2) Check legacy random-id docs by email, do NOT auto-add uid-doc if legacy found
+      const legacy = await findLegacyByEmail(user.email);
+      if (legacy) {
+        console.warn("Found legacy user doc with same email. Aborting auto-create to avoid duplicates.", {
+          legacyId: legacy.id,
+          legacyData: legacy.data(),
+        });
+        setErr(
+          "An account with this email already exists in our records. Please sign in using that account or contact support to migrate data."
+        );
+        setLoading(false);
+        return;
+      }
+
+      // 3) Safe: create users/{uid}
+      await writeData(user.uid, user.displayName || "", user.email || "");
+      navigate("/");
     } catch (error) {
       console.error("Google sign-in error:", error);
-      setErr("Google sign-in failed. Please try again.");
+      if (error?.code === "auth/account-exists-with-different-credential") {
+        setErr(
+          "An account with this email exists with a different sign-in method. Try that provider or link accounts."
+        );
+      } else {
+        setErr(error.message || "Google sign-in failed. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -94,6 +151,14 @@ export default function SignUp() {
 
     setLoading(true);
     try {
+      // PRE-CHECK: prevent creating duplicates for an email already registered
+      const methods = await fetchSignInMethodsForEmail(auth, email);
+      if (methods && methods.length > 0) {
+        setErr("This email is already registered — try signing in.");
+        setLoading(false);
+        return;
+      }
+
       const userCred = await createUserWithEmailAndPassword(auth, email, password);
 
       try {
@@ -103,8 +168,8 @@ export default function SignUp() {
         console.warn("Could not set displayName:", profileErr);
       }
 
-      // write to Firestore after signup
-      await writeData(name, email);
+      // IMPORTANT: pass uid first — fixed here
+      await writeData(userCred.user.uid, name, email);
 
       // success animation
       gsap.to(wrapRef.current, { scale: 0.995, duration: 0.06, yoyo: true, repeat: 1 });

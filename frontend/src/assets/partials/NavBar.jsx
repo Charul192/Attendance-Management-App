@@ -1,12 +1,24 @@
 import PillNav from "./PillNav";
 import React, { useState, useEffect } from "react";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 import { app } from "./firebase.js";
 
 const auth = getAuth(app);
 
 export default function NavBar() {
+  const navigate = useNavigate();
   const [navItems, setNavItems] = useState([]);
+
+  const handleLogout = async () => {
+  try {
+    await signOut(auth);
+    navigate('/');
+  } catch (err) {
+    console.error("Logout error:", err);
+    // optionally show message then still navigate or not
+  }
+};
 
   useEffect(() => {
     // subscribe to auth state
@@ -17,7 +29,7 @@ export default function NavBar() {
           { label: "Home", href: "/" },
           { label: "About", href: "/about" },
           { label: user.displayName || "Profile", href: `/${user.uid}` }, // safer than /:id
-          { label: "Log Out", onClick: () => signOut(auth) },
+          { label: "Log Out", onClick: handleLogout }
         ]);
       } else {
         setNavItems([

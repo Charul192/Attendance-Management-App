@@ -1,19 +1,9 @@
-// SubjectManager.jsx
 import React, { useState, useEffect } from "react";
 import {getFirestore, collection, addDoc} from 'firebase/firestore';
-import {app} from './firebase'; 
-
-/**
- * SubjectManager
- *
- * - Fill Subject Code and # of Classes and click Save.
- * - After saving you'll see it in the list and an "Add more" button to add another.
- * - Data persists to localStorage.
- *
- * This version uses CSS variables for colors so it matches your site's theme.
- */
+import {app, auth} from './firebase'; 
 
 const firestore = getFirestore(app);
+const uid = auth.currentUser?.uid;
 
 export default function SubjectManager() {
   const [entries, setEntries] = useState(() => {
@@ -27,24 +17,15 @@ export default function SubjectManager() {
 
   const normalize = (s) => (s || "").trim().toUpperCase();
 
-  const makeSubCollection = async (uid, { code, classes, savedAt }) => {
-  if (!uid) throw new Error("No user id provided");
-  if (!code) throw new Error("No subject code provided");
-
-  const codeLower = normalize(code);
-
-  const colRef = collection(firestore, "users", uid, "subjects");
-  const docRef = await addDoc(colRef, {
-    code,
-    code_Upper: codeUpper,
-    classes,
-    savedAt: savedAt || new Date().toISOString(),
-    createdAt: serverTimestamp(),
-    createdBy: uid,
-  });
-
-  return docRef.id;
-};
+  const makeSubCollection = async(code, classes) => {
+    await addDoc(collection(firestore, 'users' , uid ,'subjects'), {
+      Code: code,
+      Classes: classes,
+      savedAt: new Date().toISOString(),
+      createdAt: serverTimestamp(),
+      createdBy: uid,
+    })
+  }
 
   const [showForm, setShowForm] = useState(true); // show form initially
   const [message, setMessage] = useState("");
@@ -135,7 +116,8 @@ function SubjectForm({ onSave }) {
 
     setSaving(true);
     // simulate small delay
-    setTimeout(() => {
+    setTimeout( async() => {
+      await makeSubCollection(trimmedCode, num);
       onSave({
         code: trimmedCode,
         classes: num,
@@ -173,7 +155,7 @@ function SubjectForm({ onSave }) {
       {error && <div style={styles.error}>{error}</div>}
 
       <div style={styles.buttonsRow}>
-        <button type="submit" style={styles.saveBtn} disabled={saving} onClick={makeSubCollection()}>
+        <button type="submit" style={styles.saveBtn} disabled={saving}>
           {saving ? "Saving…" : "Save"}
         </button>
         <button
