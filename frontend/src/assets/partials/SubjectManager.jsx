@@ -1,5 +1,7 @@
 // SubjectManager.jsx
 import React, { useState, useEffect } from "react";
+import {getFirestore, collection, addDoc} from 'firebase/firestore';
+import {app} from './firebase'; 
 
 /**
  * SubjectManager
@@ -10,6 +12,9 @@ import React, { useState, useEffect } from "react";
  *
  * This version uses CSS variables for colors so it matches your site's theme.
  */
+
+const firestore = getFirestore(app);
+
 export default function SubjectManager() {
   const [entries, setEntries] = useState(() => {
     try {
@@ -19,6 +24,27 @@ export default function SubjectManager() {
       return [];
     }
   });
+
+  const normalize = (s) => (s || "").trim().toUpperCase();
+
+  const makeSubCollection = async (uid, { code, classes, savedAt }) => {
+  if (!uid) throw new Error("No user id provided");
+  if (!code) throw new Error("No subject code provided");
+
+  const codeLower = normalize(code);
+
+  const colRef = collection(firestore, "users", uid, "subjects");
+  const docRef = await addDoc(colRef, {
+    code,
+    code_Upper: codeUpper,
+    classes,
+    savedAt: savedAt || new Date().toISOString(),
+    createdAt: serverTimestamp(),
+    createdBy: uid,
+  });
+
+  return docRef.id;
+};
 
   const [showForm, setShowForm] = useState(true); // show form initially
   const [message, setMessage] = useState("");
@@ -147,7 +173,7 @@ function SubjectForm({ onSave }) {
       {error && <div style={styles.error}>{error}</div>}
 
       <div style={styles.buttonsRow}>
-        <button type="submit" style={styles.saveBtn} disabled={saving}>
+        <button type="submit" style={styles.saveBtn} disabled={saving} onClick={makeSubCollection()}>
           {saving ? "Saving…" : "Save"}
         </button>
         <button

@@ -1,4 +1,4 @@
-// SignUp.jsx
+// SignUp.jsx (fixed)
 import React, { useState, useEffect, useRef } from "react";
 import {
   getAuth,
@@ -7,14 +7,16 @@ import {
   signInWithPopup,
   updateProfile,
 } from "firebase/auth";
-import { app } from "./partials/firebase.js"; // ensure this exports `app`
+import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { app } from "./partials/firebase.js";
 import { useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
 import "./custom.css";
-import logo from "./partials/ChatGPT Image Aug 14, 2025, 10_11_33 PM.png"; // replace with your actual logo path
+// import logo from "./partials/ChatGPT Image Aug 14, 2025, 10_11_33 PM.png";
 
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
+const firestore = getFirestore(app);
 
 export default function SignUp() {
   const [name, setName] = useState(""); // new
@@ -27,16 +29,38 @@ export default function SignUp() {
   const navigate = useNavigate();
   const [isSignedUp, setIsSignedUp] = useState(false);
 
-  const signupWithGoogle = () => {
-    signInWithPopup(auth, googleProvider)
-      .then((result) => {
-        console.log("Google signed in user:", result.user);
-        navigate("/"); // redirect after login
-      })
-      .catch((error) => {
-        console.error("Google sign-in error:", error);
-        setErr("Google sign-in failed. Please try again.");
+  const writeData = async (fullName, emailId) => {
+    if (!emailId) return; // safety
+    try {
+      await addDoc(collection(firestore, "users"), {
+        FullName: fullName || "",
+        emailId: emailId,
+        createdAt: new Date().toISOString(),
       });
+    } catch (wErr) {
+      console.error("writeData error:", wErr);
+      // optional: setErr("Could not save user data.");
+    }
+  };
+
+  const signupWithGoogle = async () => {
+    setErr("");
+    setLoading(true);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      console.log("Google signed in user:", user);
+
+      // write to Firestore (use displayName from Google user)
+      await writeData(user.displayName || "", user.email);
+
+      navigate("/"); // redirect after login
+    } catch (error) {
+      console.error("Google sign-in error:", error);
+      setErr("Google sign-in failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -55,7 +79,6 @@ export default function SignUp() {
     e.preventDefault();
     resetErrors();
 
-    // validate name too
     if (!name || !email || !password || !confirm) {
       setErr("Please fill all fields");
       return;
@@ -73,14 +96,15 @@ export default function SignUp() {
     try {
       const userCred = await createUserWithEmailAndPassword(auth, email, password);
 
-      // Set displayName on the created user
       try {
+        // set displayName on auth user
         await updateProfile(userCred.user, { displayName: name });
-        // optionally you can also update auth.currentUser, but userCred.user should be fine
       } catch (profileErr) {
         console.warn("Could not set displayName:", profileErr);
-        // don't fail the whole signup just because displayName update failed
       }
+
+      // write to Firestore after signup
+      await writeData(name, email);
 
       // success animation
       gsap.to(wrapRef.current, { scale: 0.995, duration: 0.06, yoyo: true, repeat: 1 });
@@ -89,7 +113,6 @@ export default function SignUp() {
       navigate("/"); // redirect to dashboard/home
     } catch (error) {
       console.error(error);
-      // Friendly error messages
       if (error.code === "auth/email-already-in-use") {
         setErr("This email is already registered — try signing in.");
       } else if (error.code === "auth/invalid-email") {
@@ -110,7 +133,6 @@ export default function SignUp() {
       <div className="neon-orb" />
       <div className="signup-wrap" ref={wrapRef}>
         <header className="signup-header">
-          {/* <img src={logo} alt="Bunk Smart" className="brand-logo" /> */}
           <h1 className="brand">Bunk Smart</h1>
           <p className="tag">Create your account — get smarter about attendance</p>
         </header>
@@ -175,9 +197,14 @@ export default function SignUp() {
             {loading ? "Creating account..." : "Create account"}
           </button>
 
-          <button className="cta-btn" type="button" onClick={signupWithGoogle}>
+          <button
+            className="cta-btn"
+            type="button"
+            onClick={signupWithGoogle}
+            disabled={loading}
+          >
             <span className="glow" />
-            Sign In with Google
+            {loading ? "Please wait..." : "Sign In with Google"}
           </button>
 
           <div className="extras">
@@ -198,10 +225,6 @@ export default function SignUp() {
           </div>
         </form>
       </div>
-
-      {/* <div className="signup-footer">
-        <small>Built with 🔥 — Bunk Smart</small>
-      </div> */}
     </div>
   );
 }
