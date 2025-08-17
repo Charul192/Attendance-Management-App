@@ -73,8 +73,19 @@ export default function SubjectCard({ subject, uid }) {
   const classes = Number(subject.Classes ?? subject.classes ?? 0);
   const absent = Number(subject.Absent ?? subject.absent ?? 0);
   if (classes <= 0) return 0;
-  return Math.max(0, Math.min(1, (classes - absent) / classes) * 100);
+  const result = Math.max(0, Math.min(1, (classes - absent) / classes) * 100);
+  return result.toFixed(2);
 }
+
+function bunk(subject){
+  const classes = Number(subject.Classes ?? subject.classes ?? 0);
+  const absent = Number(subject.Absent ?? subject.absent ?? 0);
+  if (classes <= 0) return 0;
+  const result = ((classes *0.25) - absent);
+  return Math.floor(result);
+}
+
+const bunkClasses = bunk(subject);
 
 const pct = calculateFraction(subject);
 
@@ -85,13 +96,18 @@ const pct = calculateFraction(subject);
       <p>Present: {subject.Present ?? 0}</p>
       <p>Absent: {subject.Absent ?? 0}</p>
       <p>Percentage Present: {pct}</p>
+      <p>Safe Bunk: {bunkClasses}</p>
 
       <button onClick={handleMarkPresent} disabled={busy}>
         Mark Present
       </button>
+      <br/>
+      <br/>
       <button onClick={handleMarkAbsent} disabled={busy}>
         Mark Absent
       </button>
+      <br/>
+      <br/>
       <button onClick={handleNoClass} disabled={busy || localClasses <= 0}>
         No Class
       </button>
