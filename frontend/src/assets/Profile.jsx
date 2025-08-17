@@ -5,7 +5,6 @@ import Tag from './partials/tag';
 import SubjectManager from './partials/SubjectManager';
 
 export default function Profile() {
-    const subjects = ["Math", "Physics", "Chemistry", "CS", "English"];
   const [chosen, setChosen] = useState(null);
   return (
     <>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {getFirestore, collection, addDoc} from 'firebase/firestore';
+import {getFirestore, collection, addDoc, serverTimestamp} from 'firebase/firestore';
 import {app, auth} from './firebase'; 
 
 const firestore = getFirestore(app);
@@ -18,9 +18,13 @@ export default function SubjectManager() {
   const normalize = (s) => (s || "").trim().toUpperCase();
 
   const makeSubCollection = async(code, classes) => {
+    const uid = auth.currentUser?.uid;
+  if (!uid) throw new Error("User not signed in");
     await addDoc(collection(firestore, 'users' , uid ,'subjects'), {
       Code: code,
       Classes: classes,
+      Present: 0,
+      Absent: 0,
       savedAt: new Date().toISOString(),
       createdAt: serverTimestamp(),
       createdBy: uid,
@@ -61,7 +65,7 @@ export default function SubjectManager() {
       <h2 style={styles.title}>Add Subject & Classes</h2>
 
       {showForm ? (
-        <SubjectForm onSave={handleSave} />
+        <SubjectForm onSave={handleSave} makeSubCollection={makeSubCollection} />
       ) : (
         <div style={styles.savedNotice}>
           <span>{message || "Saved — want to add more?"}</span>
@@ -86,7 +90,7 @@ export default function SubjectManager() {
 }
 
 /* Subject form component */
-function SubjectForm({ onSave }) {
+function SubjectForm({ onSave, makeSubCollection }) {
   const [code, setCode] = useState("");
   const [classes, setClasses] = useState("");
   const [error, setError] = useState("");
