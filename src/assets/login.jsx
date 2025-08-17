@@ -108,8 +108,8 @@ export default function Login() {
       <div className="neon-orb" />
       <div className="signin-wrap" ref={containerRef}>
         <header className="signin-header">
-          <h1 className="brand">BUNK<span>•</span>SMART</h1>
-          <p className="tag">Sign in and keep your attendance in check — with style ✨</p>
+          <h1 className="brand">BUNK<span></span>SMART</h1>
+          <p className="tag">Sign in and keep your attendance in check✨</p>
         </header>
 
         <form className="signin-form" onSubmit={handleSubmit} noValidate>
@@ -165,11 +165,6 @@ export default function Login() {
             </button>
           </div>
         </form>
-      </div>
-
-      {/* small footer neon */}
-      <div className="signin-footer">
-        <small>Made with 🔥 & GSAP</small>
       </div>
 
       {/* --- Reset Password Modal --- */}

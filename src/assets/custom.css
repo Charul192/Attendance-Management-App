@@ -11,9 +11,9 @@
   min-height: 100vh;
   display: grid;
   place-items: center;
-  background: radial-gradient(1200px 600px at 10% 10%, rgba(91,227,255,0.03), transparent),
+  /* background: radial-gradient(1200px 600px at 10% 10%, rgba(91,227,255,0.03), transparent),
               radial-gradient(900px 400px at 90% 90%, rgba(255,78,205,0.03), transparent),
-              linear-gradient(180deg, var(--bg-1), var(--bg-2));
+              linear-gradient(180deg, var(--bg-1), var(--bg-2)); */
   color: #e6eef8;
   padding: 48px 20px;
   overflow: hidden;
@@ -189,9 +189,9 @@
   min-height: 100vh;
   display: grid;
   place-items: center;
-  background: radial-gradient(1200px 600px at 10% 10%, rgba(91,227,255,0.03), transparent),
+  /* background: radial-gradient(1200px 600px at 10% 10%, rgba(91,227,255,0.03), transparent),
               radial-gradient(900px 400px at 90% 90%, rgba(255,78,205,0.03), transparent),
-              linear-gradient(180deg, var(--bg-1), var(--bg-2));
+              linear-gradient(180deg, var(--bg-1), var(--bg-2)); */
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   color: #e6eef8;
   overflow: hidden;
@@ -199,7 +199,7 @@
 }
 
 /* subtle background grid */
-.bg-grid{
+/* .bg-grid{
   position: absolute;
   inset: 0;
   background-image: linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px),
@@ -207,7 +207,7 @@
   background-size: 48px 48px, 48px 48px;
   opacity: 0.06;
   pointer-events: none;
-}
+} */
 
 /* glowing orb */
 .neon-orb{
