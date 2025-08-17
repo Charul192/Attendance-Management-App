@@ -356,3 +356,24 @@
   .brand{ font-size: 24px; }
   .neon-orb{ width: 300px; height: 300px; transform: translateY(-8vh) translateX(20vw); }
 }
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: rgba(0,0,0,0.45);
+  z-index: 1000;
+}
+.reset-modal {
+  width: 95%;
+  max-width: 420px;
+  background: #0f1724;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  color: #fff;
+}
+.modal-actions { display:flex; gap:12px; margin-top:12px; align-items:center; }
+.success-box { background: rgba(16,185,129,0.12); color: #10b981; padding:8px; border-radius:6px; }
