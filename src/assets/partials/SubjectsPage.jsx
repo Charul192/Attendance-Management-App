@@ -46,6 +46,7 @@ export default function SubjectsPage() {
   if (loading) return <div>Loading…</div>;
 
   return (
+    uid ? (
     <div>
       <h2>Subjects List</h2>
       {subjects.length === 0 ? (
@@ -55,6 +56,6 @@ export default function SubjectsPage() {
           <SubjectCard key={subj.id} subject={subj} uid={uid} />
         ))
       )}
-    </div>
+    </div>) : ("")
   );
 }
