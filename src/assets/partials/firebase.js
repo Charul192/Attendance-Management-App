@@ -1,16 +1,16 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";  // 👈 yeh line add karo
+import { getAuth } from "firebase/auth"; 
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCsXKV12H4ssEa9MlvrHpRKsPaM4b8WzSo",
-  authDomain: "attendance-management-ap-7f81c.firebaseapp.com",
-  projectId: "attendance-management-ap-7f81c",
-  storageBucket: "attendance-management-ap-7f81c.firebasestorage.app",
-  messagingSenderId: "998787644397",
-  appId: "1:998787644397:web:430099b825ee05797c85e4",
-  measurementId: "G-62EP242SFD",
-  databaseURL: "https://attendance-management-ap-7f81c-default-rtdb.firebaseio.com"
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  projectId: process.env.PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
+  messagingSenderId: process.env.MESSAGING_SENDER_ID,
+  appId: process.env.APP_ID,
+  measurementId: process.env.MEASUREMENT_ID,
+  databaseURL: process.env.DATABASE_URL
 };
 
 export const app = initializeApp(firebaseConfig);
