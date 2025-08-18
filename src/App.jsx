@@ -8,12 +8,15 @@ import About from './assets/about.jsx';
 import SignUp from './assets/SignUp.jsx';
 import Login from './assets/login.jsx';
 import Profile from './assets/Profile.jsx';
+import DarkVeil from './assets/DarkVeil.jsx';
 
 function App() {
 const [isSignedUp, setIsSignedUp] = useState(false);
   return (
     <>
-    {/* <BackGround/> */}
+    <div style={{ width: '100%', height: '600px', position: 'relative' }}>
+  <DarkVeil />
+</div>
      <BrowserRouter>
     <Routes>
             <Route path="/" element={<Home />} />
