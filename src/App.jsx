@@ -19,6 +19,7 @@ function App() {
   //   .then(permission => {
       if (permission === 'granted') {
         //generate token
+        //Push the genrated token to db
         const token = await getToken(messaging, {vapiKey: import.meta.env.VITE_V_API_KEY});
           console.log("Token Gen", token);
       } else if (permission === 'denied') {
