@@ -26,6 +26,7 @@ export default function SubjectCard({ subject, uid }) {
     try {
       const ref = doc(db, "users", uid, "subjects", subject.id);
       // atomic decrement
+      bunk(subject);
       await updateDoc(ref, { Classes: increment(-1) });
     } catch (err) {
       console.error("Error updating classes:", err);
@@ -97,8 +98,7 @@ const pct = calculateFraction(subject);
       <p>Absent: {subject.Absent ?? 0}</p>
       <p>Percentage Present: {pct}</p>
       <p>Safe Bunk: {bunkClasses}</p>
-
-      <button onClick={handleMarkPresent} disabled={busy}>
+      {/* <button onClick={handleMarkPresent} disabled={busy}>
         Mark Present
       </button>
       <br/>
@@ -110,7 +110,7 @@ const pct = calculateFraction(subject);
       <br/>
       <button onClick={handleNoClass} disabled={busy || localClasses <= 0}>
         No Class
-      </button>
+      </button> */}
     </PixelCard>
   );
 }

@@ -14,9 +14,9 @@ function App() {
 const [isSignedUp, setIsSignedUp] = useState(false);
   return (
     <>
-    <div style={{ width: '100%', height: '600px', position: 'relative' }}>
+    {/* <div style={{ width: '100%', height: '600px', position: 'relative' }}>
   <DarkVeil />
-</div>
+</div> */}
      <BrowserRouter>
     <Routes>
             <Route path="/" element={<Home />} />

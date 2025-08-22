@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from "react";
-import {getFirestore, collection, addDoc, serverTimestamp} from 'firebase/firestore';
-import {app, auth} from './firebase'; 
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  serverTimestamp,
+  doc,
+  deleteDoc,
+  getDocs,
+} from "firebase/firestore";
+import { app, auth } from "./firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 const firestore = getFirestore(app);
-const uid = auth.currentUser?.uid;
 
 export default function SubjectManager() {
+  // entries store objects with shape: { id: <firestore-id>, code, classes, savedAt }
   const [entries, setEntries] = useState(() => {
     try {
       const raw = localStorage.getItem("subjects_v1");
@@ -15,12 +24,65 @@ export default function SubjectManager() {
     }
   });
 
+  const [currentUid, setCurrentUid] = useState(auth.currentUser?.uid ?? null);
+  const [showForm, setShowForm] = useState(true);
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // keep localStorage in sync with entries
+  useEffect(() => {
+    localStorage.setItem("subjects_v1", JSON.stringify(entries));
+  }, [entries]);
+
+  // listen to auth state changes and store uid
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => {
+      setCurrentUid(user ? user.uid : null);
+    });
+    return () => unsub();
+  }, []);
+
+  // load subjects from Firestore for the signed-in user (replaces local list)
+  useEffect(() => {
+    let mounted = true;
+    const loadFromFirestore = async () => {
+      if (!currentUid) return;
+      setLoading(true);
+      try {
+        const snap = await getDocs(collection(firestore, "users", currentUid, "subjects"));
+        const list = snap.docs.map((d) => {
+          const data = d.data();
+          return {
+            id: d.id,
+            code: data.Code ?? data.code ?? "",
+            classes: Number(data.Classes ?? data.classes ?? 0),
+            savedAt: data.savedAt ?? new Date().toISOString(),
+          };
+        });
+        if (!mounted) return;
+        // Replace local entries with server list. If you prefer merging, change this.
+        setEntries(list);
+      } catch (err) {
+        console.error("Could not load subjects:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadFromFirestore();
+    return () => {
+      mounted = false;
+    };
+  }, [currentUid]);
+
+  // normalize helper
   const normalize = (s) => (s || "").trim().toUpperCase();
 
-  const makeSubCollection = async(code, classes) => {
-    const uid = auth.currentUser?.uid;
-  if (!uid) throw new Error("User not signed in");
-    await addDoc(collection(firestore, 'users' , uid ,'subjects'), {
+  // create a subject under users/{uid}/subjects and return firestore id
+  const makeSubCollection = async (code, classes) => {
+    const uid = currentUid;
+    if (!uid) throw new Error("User not signed in");
+    const docRef = await addDoc(collection(firestore, "users", uid, "subjects"), {
       Code: code,
       Classes: classes,
       Present: 0,
@@ -28,36 +90,81 @@ export default function SubjectManager() {
       savedAt: new Date().toISOString(),
       createdAt: serverTimestamp(),
       createdBy: uid,
-    })
-  }
+    });
+    return docRef.id; // firestore-generated string id
+  };
 
-  const [showForm, setShowForm] = useState(true); // show form initially
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    localStorage.setItem("subjects_v1", JSON.stringify(entries));
-  }, [entries]);
-
+  // save handler now expects entry.id to be a firestore id (string)
   const handleSave = (entry) => {
-    setEntries((prev) => [{ ...entry, id: Date.now() }, ...prev]);
-    setShowForm(false); // hide form after save; user can click Add more
+    setEntries((prev) => [{ ...entry }, ...prev]);
+    setShowForm(false);
     setMessage("Subject saved.");
     setTimeout(() => setMessage(""), 2000);
   };
 
-  const handleDelete = (id) => {
-    if (!window.confirm("Delete this subject?")) return;
+  // delete handler: optimistic UI, revert on error. Only attempts remote delete when id is a string.
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this subject?")) return;
+
+    // optimistic UI
+    const old = entries;
     setEntries((prev) => prev.filter((e) => e.id !== id));
+
+    // if id is not a string, it's a local-only item (skip remote delete)
+    if (typeof id !== "string") {
+      console.warn("Skipping remote delete for local-only id:", id);
+      return;
+    }
+
+    const uid = currentUid;
+    if (!uid) {
+      alert("Please sign in to delete subjects from the server.");
+      setEntries(old); // revert
+      return;
+    }
+
+    try {
+      const ref = doc(firestore, "users", uid, "subjects", id);
+      await deleteDoc(ref);
+    } catch (err) {
+      console.error("Error deleting document:", err);
+      setEntries(old); // revert optimistic update
+      alert("Could not delete subject from server. See console.");
+    }
   };
 
-  const handleAddMore = () => {
-    setShowForm(true);
-  };
+  const handleAddMore = () => setShowForm(true);
 
-  const handleClearAll = () => {
-    if (!window.confirm("Clear all saved subjects?")) return;
+  const handleClearAll = async () => {
+    if (!window.confirm("Clear all saved subjects? This will remove them locally and from server. Proceed?")) return;
+
+    const uid = currentUid;
+    const old = entries;
+
+    // optimistic: clear local UI and storage
     setEntries([]);
     localStorage.removeItem("subjects_v1");
+
+    // if user not signed in, we are done (local-only clear)
+    if (!uid) return;
+
+    try {
+      setLoading(true);
+      // fetch all docs under users/{uid}/subjects and delete them in parallel
+      const snap = await getDocs(collection(firestore, "users", uid, "subjects"));
+      if (!snap.empty) {
+        const deletions = snap.docs.map((d) => deleteDoc(doc(firestore, "users", uid, "subjects", d.id)));
+        await Promise.all(deletions);
+      }
+    } catch (err) {
+      console.error("Could not clear server subjects:", err);
+      // revert local change
+      setEntries(old);
+      localStorage.setItem("subjects_v1", JSON.stringify(old));
+      alert("Could not clear subjects from server. See console.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -84,6 +191,8 @@ export default function SubjectManager() {
         </div>
       </div>
 
+      {loading ? <div style={{ padding: 8 }}>Loading subjects…</div> : null}
+
       <SubjectList entries={entries} onDelete={handleDelete} />
     </div>
   );
@@ -102,7 +211,7 @@ function SubjectForm({ onSave, makeSubCollection }) {
     setError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -119,17 +228,17 @@ function SubjectForm({ onSave, makeSubCollection }) {
     }
 
     setSaving(true);
-    // simulate small delay
-    setTimeout( async() => {
-      await makeSubCollection(trimmedCode, num);
-      onSave({
-        code: trimmedCode,
-        classes: num,
-        savedAt: new Date().toISOString(),
-      });
+    try {
+      // create document and get firestore id
+      const newId = await makeSubCollection(trimmedCode, num);
+      onSave({ id: newId, code: trimmedCode, classes: num, savedAt: new Date().toISOString() });
       reset();
+    } catch (err) {
+      console.error("Failed to save subject:", err);
+      alert("Could not save subject. Make sure you're signed in.");
+    } finally {
       setSaving(false);
-    }, 250);
+    }
   };
 
   return (
@@ -166,9 +275,7 @@ function SubjectForm({ onSave, makeSubCollection }) {
           type="button"
           style={styles.cancelBtn}
           onClick={() => {
-            setCode("");
-            setClasses("");
-            setError("");
+            reset();
           }}
         >
           Reset
