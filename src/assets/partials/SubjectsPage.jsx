@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
-import { auth, db } from "./firebase"; // adjust path
+import { auth, db } from "./firebase";
 import SubjectCard from "./SubjectCard";
 
 export default function SubjectsPage() {
