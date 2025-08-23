@@ -45,7 +45,7 @@ export default function NotificationPrompt() {
     <div>
       {permission === 'default' && <button onClick={handleEnable}>Enable notifications</button>}
       {permission === 'granted' && <p>Notifications enabled ✅</p>}
-      {permission === 'denied' && <p>Notifications blocked — change browser site settings.</p>}
+      {permission === 'denied' && <button onClick={handleEnable}>Enable notification for better services.</button>}
     </div>
   );
 }

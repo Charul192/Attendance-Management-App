@@ -86,6 +86,22 @@ function bunk(subject){
   return Math.floor(result);
 }
 
+const handleExtraClass = async() => {
+  setLocalClasses((v) => v + 1); // optimistic UI
+
+    try {
+      const ref = doc(db, "users", uid, "subjects", subject.id);
+      // atomic decrement
+      bunk(subject);
+      await updateDoc(ref, { Classes: increment(1) });
+    } catch (err) {
+      console.error("Error updating classes:", err);
+      // revert optimistic change on error
+      setLocalClasses((v) => v + 1);
+      alert("Could not update classes. See console.");
+    }
+}
+
 const bunkClasses = bunk(subject);
 
 const pct = calculateFraction(subject);
@@ -98,7 +114,7 @@ const pct = calculateFraction(subject);
       <p>Absent: {subject.Absent ?? 0}</p>
       <p>Percentage Present: {pct}</p>
       <p>Safe Bunk: {bunkClasses}</p>
-      {/* <button onClick={handleMarkPresent} disabled={busy}>
+      <button onClick={handleMarkPresent} disabled={busy}>
         Mark Present
       </button>
       <br/>
@@ -110,7 +126,12 @@ const pct = calculateFraction(subject);
       <br/>
       <button onClick={handleNoClass} disabled={busy || localClasses <= 0}>
         No Class
-      </button> */}
+      </button>
+      <br/>
+      <br/>
+      <button onClick={handleExtraClass} disabled={busy || localClasses <= 0}>
+        Extra Class
+      </button>
     </PixelCard>
   );
 }
