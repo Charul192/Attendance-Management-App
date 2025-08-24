@@ -4,6 +4,6 @@ import React from 'react';
 
 export default function Tag(){
     return(
-<h3>Own your attendance game!</h3>
+<p style={{ fontSize: "1.70rem", fontWeight: "350", marginBottom: "1rem", fontFamily: "Nunito" }}>Visualize your attendance, set targets, and get alerts <br/>before you fall below 75%.</p>
 )
 }

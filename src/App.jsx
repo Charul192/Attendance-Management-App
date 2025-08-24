@@ -8,6 +8,7 @@ import SignUp from './assets/SignUp.jsx';
 import Login from './assets/login.jsx';
 import Profile from './assets/Profile.jsx';
 import DarkVeil from './assets/DarkVeil.jsx';
+import LearnMore from './assets/LearnMore.jsx'
 
 // make sure your firebase.js exports: auth, db, messaging
 import { messaging, auth, db } from './assets/partials/firebase';
@@ -23,6 +24,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/learnmore" element={<LearnMore />} />
           <Route path="/signup" element={<SignUp setIsSignedUp={setIsSignedUp} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/:uid" element={<Profile />} />
