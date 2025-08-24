@@ -5,6 +5,8 @@ import React, { useEffect, useState } from 'react';
 import Tag from './partials/tag';
 import SubjectsPage from './partials/SubjectsPage';
 import NotificationPrompt from './partials/NotificationPrompt';
+import './custom.css';
+import { useNavigate } from 'react-router-dom';
 
 import { onAuthStateChanged } from "firebase/auth";
 import { getToken } from 'firebase/messaging';
@@ -20,7 +22,7 @@ import {
 import { db, messaging, auth } from "./partials/firebase";
 
 export default function Home() {
-  // ← correct: keep firebase user in React state so UI updates
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [subjects, setSubjects] = useState([]);
 
@@ -128,6 +130,7 @@ export default function Home() {
     }
   }
 
+
   return (
     <>
       <NavBar />
@@ -135,15 +138,13 @@ export default function Home() {
       <Logo/>
       <Tag/>
       <br/><br/><br/>
-      {/* show NotificationPrompt only when user is signed in */}
-      {user && <NotificationPrompt />}
+      <button style={{marginRight: "70px", fontSize: "1.30rem"}}>Start Tracking Today</button>
+      <button style={{marginLeft: "70px", fontSize: "1.30rem"}}  onClick={() => navigate('/learnmore')}>Learn More</button>
+      <NotificationPrompt />
       <br/>
+      
       {/* pass subjects if you want */}
       <SubjectsPage subjects={subjects} />
-      {/* quick logout for testing */}
-      {/* <button onClick={handleLogout} style={{ position: 'fixed', bottom: 12, right: 12 }}>
-        Logout (remove token)
-      </button> */}
     </>
   );
 }

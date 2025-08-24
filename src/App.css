@@ -40,3 +40,8 @@
 .read-the-docs {
   color: #888;
 }
+
+.app {
+  height: 100vh;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}

@@ -8,7 +8,7 @@ sentence="Bunk Smart"
 manualMode={false}
 blurAmount={5}
 borderColor="red"
-animationDuration={2}
+animationDuration={2.5}
 pauseBetweenAnimations={1}
 />
   )
