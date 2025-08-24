@@ -137,7 +137,7 @@ export default function Home() {
       <br/><br/><br/><br/><br/>
       <Logo/>
       <Tag/>
-      <br/><br/><br/>
+      <br/>
       <button style={{marginRight: "70px", fontSize: "1.30rem"}}>Start Tracking Today</button>
       <button style={{marginLeft: "70px", fontSize: "1.30rem"}}  onClick={() => navigate('/learnmore')}>Learn More</button>
       <NotificationPrompt />
