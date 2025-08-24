@@ -1,0 +1,50 @@
+.whatIs{
+    margin-top: 50px;
+    padding: 30px;
+    height: 160px;
+    width: 820px;
+    background-color: #fafafa10;
+    border-radius: 20px;
+    border: 2px solid #62649056;
+}
+
+.heading{
+    margin-top: -25px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.content{
+    margin-top: -15px;
+    margin-left: 50px;
+    font-size: 18px;
+    text-align: left;
+    font-family: Georgia, serif;
+}
+
+.CoreFeatures{
+    margin-top: 50px;
+    padding: 30px;
+    height: 400px;
+    width: 820px;
+    background-color: #fafafa10;
+    border-radius: 20px;
+    border: 2px solid #62649056;
+}
+
+.head{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.left{
+    text-align: left;
+}
+
+.cf-content{
+    margin-left: 40px;
+    margin-top: -20px;
+    width:450px;
+}
