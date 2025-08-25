@@ -1,6 +1,5 @@
 import NavBar from './partials/NavBar'; // Ensure exact filename case
 import Logo from './partials/Logo';
-import React ,{useState} from 'react';
 import Tag from './partials/tag';
 import SubjectManager from './partials/SubjectManager';
 import {Chart} from './partials/Chart';
