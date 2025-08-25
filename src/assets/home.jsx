@@ -7,6 +7,7 @@ import SubjectsPage from './partials/SubjectsPage';
 import NotificationPrompt from './partials/NotificationPrompt';
 import './custom.css';
 import { useNavigate } from 'react-router-dom';
+import NeedToKnow from './partials/NeedToKnow';
 
 import { onAuthStateChanged } from "firebase/auth";
 import { getToken } from 'firebase/messaging';
@@ -133,15 +134,18 @@ export default function Home() {
 
   return (
     <>
+    <div className="home">
       <NavBar />
       <br/><br/><br/><br/><br/>
       <Logo/>
       <Tag/>
       <br/>
-      <button style={{marginRight: "70px", fontSize: "1.30rem"}}>Start Tracking Today</button>
+      <button style={{marginRight: "70px", fontSize: "1.30rem"}} onClick={() => navigate('/SignUp')}>Start Tracking Today</button>
       <button style={{marginLeft: "70px", fontSize: "1.30rem"}}  onClick={() => navigate('/learnmore')}>Learn More</button>
       <NotificationPrompt />
       <br/>
+      </div>
+      <NeedToKnow/>
       
       {/* pass subjects if you want */}
       <SubjectsPage subjects={subjects} />
