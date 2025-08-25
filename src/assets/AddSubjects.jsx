@@ -89,7 +89,7 @@ export default function AddSubject(){
         }
 
         const token = await getToken(messaging, {
-          vapidKey: import.meta.env.VITE_V_API_KEY,
+          vapidKey: import.meta.env.VITE_VAPID_KEY,
           serviceWorkerRegistration: swReg || undefined
         });
 
