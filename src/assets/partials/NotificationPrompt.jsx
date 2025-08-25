@@ -44,7 +44,7 @@ export default function NotificationPrompt() {
   return (
     <div>
       {permission === 'default' && <button onClick={handleEnable}>Enable notifications</button>}
-      {permission === 'granted' && <p>Notifications enabled ✅</p>}
+      {/* {permission === 'granted' && <p>Notifications enabled ✅</p>} */}
       {permission === 'denied' && <button onClick={handleEnable}>Enable notification for better services.</button>}
     </div>
   );
