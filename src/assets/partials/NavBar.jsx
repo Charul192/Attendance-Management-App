@@ -1,10 +1,10 @@
 import PillNav from "./PillNav";
 import React, { useState, useEffect } from "react";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { app } from "./firebase.js";
+import { app, auth } from "./firebase.js";
 
-const auth = getAuth(app);
+// const auth = getAuth(app);
 
 export default function NavBar() {
   const navigate = useNavigate();
