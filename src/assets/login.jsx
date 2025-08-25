@@ -1,12 +1,12 @@
 // SignIn.jsx
 import React, { useState, useEffect, useRef } from "react";
-import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
-import { app } from "../assets/partials/firebase.js"; // ensure firebase exports `app`
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import { app, auth } from "../assets/partials/firebase.js"; // ensure firebase exports `app`
 import { useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
 import "./custom.css";
 
-const auth = getAuth(app);
+// const auth = getAuth(app);
 
 export default function Login() {
   const [email, setEmail] = useState("");

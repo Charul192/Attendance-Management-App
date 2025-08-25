@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
-  getAuth,
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
@@ -18,12 +17,12 @@ import {
   getDocs,
   serverTimestamp,
 } from "firebase/firestore";
-import { app } from "./partials/firebase.js";
+import { app, auth } from "./partials/firebase.js";
 import { useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
 import "./custom.css";
 
-const auth = getAuth(app);
+// const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 const firestore = getFirestore(app);
 
