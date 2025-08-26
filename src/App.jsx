@@ -7,7 +7,7 @@ import Home from './assets/home.jsx';
 import About from './assets/about.jsx';
 import SignUp from './assets/SignUp.jsx';
 import Login from './assets/login.jsx';
-import Profile from './assets/Profile.jsx';
+import Analytics from './assets/Analytics.jsx';
 import LearnMore from './assets/LearnMore.jsx';
 import AddSubject from './assets/AddSubjects.jsx';
 
@@ -48,7 +48,7 @@ function App() {
         <Route path="/learnmore" element={<LearnMore />} />
         <Route path="/signup" element={<SignUp setIsSignedUp={setIsSignedUp} />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/:uid" element={<Profile />} />
+        <Route path="/:uid/analytics" element={<Analytics />} />
       </Routes>
     </BrowserRouter>
   );

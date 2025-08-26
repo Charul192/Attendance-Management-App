@@ -16,11 +16,11 @@ import {
   deleteDoc,
   serverTimestamp
 } from "firebase/firestore";
-
-import { db, messaging, auth } from "./partials/firebase";
 import Footer from './partials/footer';
 
-export default function AddSubject(){
+import { db, messaging, auth } from "./partials/firebase";
+
+export default function Analytics() {
     const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [subjects, setSubjects] = useState([]);
@@ -139,17 +139,13 @@ export default function AddSubject(){
       await auth.signOut();
     }
   }
-    return(
-        <>
-            <NavBar />
-            <div className="addsubject">
-            <p style={{fontSize: "1.50rem", fontWeight: "300", marginBottom: "1rem", fontFamily: "Nunito"}}>Pick a subject</p>
-            <SubjectManager />
-            </div>
-            <div className="subjects">
-                <SubjectsPage subjects={subjects} />
-            </div>
-            <Footer />
-        </>
-    )
+  return (
+    <>
+      <NavBar />
+      <div className="chart">
+        <SubjectCharts uid={uid} />
+      </div>
+      <Footer />
+    </>
+  );
 }

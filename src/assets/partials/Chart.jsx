@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import { Doughnut, Bar } from "react-chartjs-2";
 import "chart.js/auto";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "./firebase"; // <-- adjust if your firebase export path differs
+import { db } from "./firebase";
+import './charts.css';
 
 export default function SubjectCharts({ uid }) {
   const [loading, setLoading] = useState(true);
@@ -139,9 +140,9 @@ export default function SubjectCharts({ uid }) {
         <>
           {/* Overall charts */}
           <div style={{ display: "flex", gap: 20, flexWrap: "wrap", alignItems: "stretch" }}>
-            <div style={{ flex: "0 0 320px", height: 320 }}>
+            <div style={{ flex: "0 0 320px", height: 320 }} className="overall">
               <h4 style={{ margin: "8px 0" }}>Overall Presence</h4>
-              <div style={{ height: 260 }}>
+              <div style={{ height: 260 }} className="overallDough">
                 <Doughnut data={doughnutData} options={doughnutOptions} />
               </div>
               <div style={{ textAlign: "center", marginTop: 8 }}>
@@ -160,20 +161,21 @@ export default function SubjectCharts({ uid }) {
           </div>
 
           {/* Per-subject cards */}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 20 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 20 }} className="subjectchart">
             {subjects.map((s) => {
               const subjectData = {
-                labels: ["Present", "Absent"],
+                labels: ["Present", "Absent", "Left Classes"],
                 datasets: [
                   {
-                    data: [s.presentCount, Math.max(0, s.totalCount - s.presentCount), Math.max(0, s.totalCount)],
-                    backgroundColor: ["#16a34a", "#ef4444", "#000"],
+                    data: [s.presentCount, Math.max(0, s.absentCount), Math.max(0, s.totalCount)],
+                    backgroundColor: ["#16a34a", "#ef4444", "#243575ff"],
                   },
                 ],
               };
 
               return (
                 <div
+                  className="DoughtNuts"
                   key={s.docId}
                   style={{
                     flex: "0 0 240px",

@@ -395,3 +395,11 @@
   width: 100%;
   background: linear-gradient(-45deg, rgba(1, 6, 65, 0.54), black);
 }
+
+.profilebox{
+  height: 40px;
+  width: 40px;
+  background: #e9e0e098;
+  /* display: flex;
+  align-items: center; */
+}

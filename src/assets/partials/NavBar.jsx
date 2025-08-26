@@ -28,7 +28,7 @@ export default function NavBar() {
         setNavItems([
           { label: "Home", href: "/" },
           { label: "About", href: "/about" },
-          { label: user.displayName || "Profile", href: `/${user.uid}` }, // safer than /:id
+          { label: "Analytics", href: `/${user.uid}/analytics` }, // safer than /:id
           { label: "Log Out", onClick: handleLogout }
         ]);
       } else {

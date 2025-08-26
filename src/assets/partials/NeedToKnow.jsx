@@ -4,6 +4,7 @@ import "./NeedToKnow.css";
 import { FaFire } from "react-icons/fa";
 import { BsFillFileBarGraphFill } from "react-icons/bs";
 import { TiTickOutline } from "react-icons/ti";
+import { IoIosAlarm } from "react-icons/io";
 
 export default function NeedToKnow() {
   return (
@@ -81,12 +82,25 @@ export default function NeedToKnow() {
             </div>
           </div>
         </div>
-        <div className="pic">
+        <div className="remainders">
+          <div className="head">
+            <IoIosAlarm color="#50cce8ff" size="36"/>
+            <p style={{ fontFamily: "Inter, sans-serif", fontSize: "28px" }}>
+                Reminders
+              </p>
+          </div>
+          <div className="data">
+            <p style={{ fontFamily: "Inter, sans-serif", fontSize: "14px" }}>
+                Stay ahead of your schedule with reminders designed to keep you consistent. Get notified when your attendance is slipping close to the danger zone. With smart notifications, you can maintain your attendance effortlessly without the stress of last-minute surprises.
+              </p>
+          </div>
+        </div>
+        {/* <div className="pic">
           <img
             src="src\assets\partials\Screenshot 2025-08-25 225313.png"
             style={{ borderRadius: "20px" }}
           />
-        </div>
+        </div> */}
       </div>
     </>
   );
