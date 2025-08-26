@@ -44,7 +44,6 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={user ? <AddSubject /> : <Home/>} />
-        <Route path="/about" element={<About />} />
         <Route path="/learnmore" element={<LearnMore />} />
         <Route path="/signup" element={<SignUp setIsSignedUp={setIsSignedUp} />} />
         <Route path="/login" element={<Login />} />
