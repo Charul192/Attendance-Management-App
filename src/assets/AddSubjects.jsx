@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import NavBar from "./partials/NavBar";
 import SubjectManager from './partials/SubjectManager';
-import {Chart} from './partials/Chart';
+import SubjectCharts from './partials/Chart';
 import './custom.css';
 import SubjectsPage from "./partials/SubjectsPage";
 import NotificationPrompt from './partials/NotificationPrompt';
@@ -23,6 +23,17 @@ export default function AddSubject(){
     const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [subjects, setSubjects] = useState([]);
+  const [uid, setUid] = useState(null);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        setUid(firebaseUser.uid);
+      } else {
+        setUid(null);
+      }
+    });
+  }, []);
 
   // Save token under users/{uid}/fcmTokens/{token}
   async function saveTokenForUser(uid, token) {
@@ -138,7 +149,7 @@ export default function AddSubject(){
                 <SubjectsPage subjects={subjects} />
             </div>
             <div className="chart">
-                <Chart />
+                <SubjectCharts uid={uid} />
             </div>
         </>
     )
