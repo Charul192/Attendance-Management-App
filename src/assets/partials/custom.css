@@ -378,3 +378,25 @@ position: absolute;
   position: relative;
   z-index: 1;   /* Children (text/components) upar show ho */
 }
+
+.footer{
+    background-color: #000;
+    display: flex;
+    height: 170px;
+    justify-content: space-evenly;
+}
+
+.foot-left{
+    text-align: left;
+    padding-top: 40px;
+}
+
+.foot-right{
+    text-align: right;
+    margin-top: 60px;
+}
+
+.ready{
+  height: 300px;
+  background-color: rgba(6, 10, 54, 0.54);
+}
