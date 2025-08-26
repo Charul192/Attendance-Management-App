@@ -1,8 +1,8 @@
-import NavBar from './partials/NavBar'; // Ensure exact filename case
+import React, {useState} from 'react';
+import NavBar from './partials/NavBar';
 import Logo from './partials/Logo';
 import Tag from './partials/tag';
 import SubjectManager from './partials/SubjectManager';
-import {Chart} from './partials/Chart';
 
 export default function Profile() {
   const [chosen, setChosen] = useState(null);
@@ -12,7 +12,6 @@ export default function Profile() {
       <br />
       <h3>Pick a subject</h3>
       <SubjectManager />
-      <Chart/>
     </>
   );
 }
