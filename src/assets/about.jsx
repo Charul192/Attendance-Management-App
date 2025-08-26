@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import NavBar from "./partials/NavBar";
 import PixelCard from "./partials/PixelCard";
+import footer from "./partials/footer";
 
 /**
  * Creative About / Help page
@@ -155,6 +156,7 @@ export default function About() {
           </div>
         </PixelCard>
       </div>
+      <footer/>
     </>
   );
 }

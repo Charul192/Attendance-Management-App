@@ -8,6 +8,8 @@ import NotificationPrompt from './partials/NotificationPrompt';
 import './custom.css';
 import { useNavigate } from 'react-router-dom';
 import NeedToKnow from './partials/NeedToKnow';
+import Footer from "./partials/footer";
+import Ready from './partials/ready';
 
 import { onAuthStateChanged } from "firebase/auth";
 import { getToken } from 'firebase/messaging';
@@ -46,8 +48,8 @@ export default function Home() {
       <br/>
       </div>
       <NeedToKnow/>
-      
-      
+      <Ready/>
+      <Footer />
     </>
   );
 }
