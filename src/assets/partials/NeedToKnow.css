@@ -109,3 +109,18 @@ img{
 .remainders:hover{
     border: 1.5px solid #50cce8ff;
 }
+
+.protip{
+ background-color: rgba(247, 247, 248, 0.073);
+    border: 1.5px solid #ebe7e740;
+    border-radius: 10px;
+    height: 200px;
+    line-height: 1.8;
+    width: 1175px;
+    margin-left: 145px;
+    transition: border 0.4s ease, box-shadow 0.4s ease;   
+}
+
+.protip:Hover{
+    border: 1.5px solid rgba(255, 217, 0, 0.816);
+}

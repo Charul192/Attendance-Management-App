@@ -5,6 +5,7 @@ import { FaFire } from "react-icons/fa";
 import { BsFillFileBarGraphFill } from "react-icons/bs";
 import { TiTickOutline } from "react-icons/ti";
 import { IoIosAlarm } from "react-icons/io";
+import { PiStarFourFill } from "react-icons/pi";
 
 export default function NeedToKnow() {
   return (
@@ -101,6 +102,15 @@ export default function NeedToKnow() {
             style={{ borderRadius: "20px" }}
           />
         </div> */}
+      </div>
+      <div className="protip">
+        <p style={{ fontFamily: "Inter, sans-serif", fontSize: "28px" }}>
+              <PiStarFourFill style={{color: "gold", marginRight: "10px"}}/>
+              Pro Tip
+              </p>
+              <p style={{ fontFamily: "Pacifico", fontSize: "18px" }}>
+                Stay ahead of your schedule with reminders designed to keep you consistent. Get notified when your attendance is slipping close to the danger zone. With smart notifications, you can maintain your attendance effortlessly without the stress of last-minute surprises.
+              </p>
       </div>
     </>
   );
