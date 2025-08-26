@@ -166,8 +166,8 @@ export default function SubjectCharts({ uid }) {
                 labels: ["Present", "Absent"],
                 datasets: [
                   {
-                    data: [s.presentCount, Math.max(0, s.totalCount - s.presentCount)],
-                    backgroundColor: ["#16a34a", "#ef4444"],
+                    data: [s.presentCount, Math.max(0, s.totalCount - s.presentCount), Math.max(0, s.totalCount)],
+                    backgroundColor: ["#16a34a", "#ef4444", "#000"],
                   },
                 ],
               };

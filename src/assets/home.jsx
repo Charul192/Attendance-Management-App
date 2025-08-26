@@ -26,7 +26,7 @@ export default function Home() {
   const navigate = useNavigate();
   return (
     <>
-    <div className="home">
+    <div className="home2">
       <NavBar />
       <br/><br/><br/><br/><br/>
       <Logo/>
