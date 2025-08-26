@@ -1,5 +1,8 @@
 .features{
     display: flex;
+    justify-content: space-evenly;
+    padding-left: 120px;
+    padding-right: 120px;
 }
 
 .att{
@@ -10,13 +13,14 @@
     padding-left: 30px;
     height: 200px;
     width: 350px;
-    margin: 20px;
+    margin: 30px;
     transition: border 0.4s ease, box-shadow 0.4s ease;
 }
 
 .data{
     margin-top: -20px; 
     padding-left: 40px;
+    padding-right: 40px;
     text-align: left;
 }
 
@@ -28,7 +32,7 @@
     padding-left: 30px;
     height: 200px;
     width: 350px;
-    margin: 20px;
+    margin: 30px;
     transition: border 0.4s ease, box-shadow 0.4s ease;
 }
 
@@ -40,7 +44,7 @@
     padding-left: 30px;
     height: 200px;
     width: 350px;
-    margin: 20px;
+    margin: 30px;
     transition: border 0.4s ease, box-shadow 0.4s ease;
 }
 
@@ -52,7 +56,7 @@
     padding-left: 30px;
     height: 200px;
     width: 350px;
-    margin: 20px;
+    margin: 30px;
     transition: border 0.4s ease, box-shadow 0.4s ease;
 }
 
@@ -62,7 +66,7 @@
     padding: 5px;
     padding-left: 30px;
     width: 400px;
-    margin: 20px;
+    margin: 30px;
     transition: border 0.4s ease, box-shadow 0.4s ease;
     background-color: rgba(0, 123, 255, 0.352);
     border-radius: 20px;
@@ -87,4 +91,21 @@
 img{
     border-radius: 17px;
     padding: 20px 20px 20px 10px;
+}
+
+.remainders{
+    background-color: rgba(247, 247, 248, 0.073);
+    border: 1.5px solid #ebe7e740;
+    border-radius: 10px;
+    padding: 5px;
+    padding-left: 30px;
+    height: 440px;
+    line-height: 1.8;
+    width: 350px;
+    margin: 30px;
+    transition: border 0.4s ease, box-shadow 0.4s ease;
+}
+
+.remainders:hover{
+    border: 1.5px solid #50cce8ff;
 }

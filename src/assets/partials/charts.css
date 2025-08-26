@@ -1,0 +1,18 @@
+.doughtnuts{
+    align-items: center;
+}
+
+.subjectchart{
+    display: flex;
+    align-items: center;
+    margin: 50px;
+}
+
+.overall{
+    margin: 20px;
+}
+
+.overallDough{
+    display: flex;
+    align-items: center;
+}
