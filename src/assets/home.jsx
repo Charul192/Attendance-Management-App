@@ -27,14 +27,22 @@ export default function Home() {
   return (
     <>
     <div className="home2">
-      <NavBar />
+      <NavBar /><br/><br/>
       <br/><br/><br/><br/><br/>
       <Logo/>
+      <br/>
+      <br/>
+      <br/>
       <Tag/>
       <br/>
+      <br/><br/>
       <button style={{marginRight: "70px", fontSize: "1.30rem"}} onClick={() => navigate('/SignUp')}>Start Tracking Today</button>
       <button style={{marginLeft: "70px", fontSize: "1.30rem"}}  onClick={() => navigate('/learnmore')}>Learn More</button>
       <NotificationPrompt />
+      <br/>
+      <br/>
+      <br/>
+      <br/>
       <br/>
       </div>
       <NeedToKnow/>

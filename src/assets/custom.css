@@ -393,5 +393,5 @@
 .home2{
   height: 100%;
   width: 100%;
-  background: linear-gradient(45deg, rgba(195, 192, 199, 0), black);
+  background: linear-gradient(-45deg, rgba(1, 6, 65, 0.54), black);
 }

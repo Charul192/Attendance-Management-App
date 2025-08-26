@@ -51,7 +51,7 @@ export default function NavBar() {
       activeHref="/"
       className="custom-nav"
       ease="power2.easeOut"
-      baseColor="#242424"
+      baseColor="transparent"
       pillColor="#3A3A3A"
       hoveredPillTextColor="#ffffff"
       pillTextColor="#FFFFFF"
