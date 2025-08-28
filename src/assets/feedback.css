@@ -259,3 +259,13 @@
     width: 100%;
   }
 }
+
+.buttons button.active {
+  background: linear-gradient(90deg, #6366f1, #4338ca);
+  font-weight: 600;
+}
+
+.email textarea:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
