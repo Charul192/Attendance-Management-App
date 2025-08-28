@@ -1,0 +1,13 @@
+.box{
+    padding: 100px;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #f2ecec22;
+    margin: 90px 250px;
+    height: 30rem;
+    border-radius: 50px;
+}
+
+.heading{
+    width: 100%;
+}

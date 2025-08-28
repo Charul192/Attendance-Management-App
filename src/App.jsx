@@ -1,40 +1,57 @@
-// App.jsx (updated)
+// App.jsx
 import './App.css';
-import Home from './assets/home.jsx';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+import Home from './assets/home.jsx';
 import About from './assets/about.jsx';
 import SignUp from './assets/SignUp.jsx';
 import Login from './assets/login.jsx';
-import Profile from './assets/Profile.jsx';
-import DarkVeil from './assets/DarkVeil.jsx';
-import LearnMore from './assets/LearnMore.jsx'
+import Analytics from './assets/Analytics.jsx';
+import LearnMore from './assets/LearnMore.jsx';
+import AddSubject from './assets/AddSubjects.jsx';
+import Feedback from './assets/Feedback.jsx';
 
-// make sure your firebase.js exports: auth, db, messaging
-import { messaging, auth, db } from './assets/partials/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
-import { doc, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+// Firebase auth
+import { auth } from "./assets/partials/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 function App() {
+  const [user, setUser] = useState(undefined);
   const [isSignedUp, setIsSignedUp] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      console.log('onAuthStateChanged ->', firebaseUser);
+      setUser(firebaseUser); // firebaseUser is an object or null
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // show loader while auth state is being determined
+  if (user === undefined) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}>
+        Loading...
+      </div>
+    );
+  }
+  console.log(import.meta.env.VITE_API_KEY)
+
 
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/learnmore" element={<LearnMore />} />
-          <Route path="/signup" element={<SignUp setIsSignedUp={setIsSignedUp} />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/:uid" element={<Profile />} />
-        </Routes>
-      </BrowserRouter>
-
-      {/* Optional logout button for testing */}
-      {/* <button onClick={handleLogout} style={{ position: 'fixed', bottom: 12, right: 12 }}>
-        Logout (remove token)
-      </button> */}
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={user ? <AddSubject /> : <Home/>} />
+        <Route path="/learnmore" element={<LearnMore />} />
+        <Route path="/signup" element={<SignUp setIsSignedUp={setIsSignedUp} />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/:uid/analytics" element={<Analytics />} />
+        <Route path="/feedback" element={<Feedback />} />
+      </Routes>
+    </BrowserRouter>
     </>
   );
 }

@@ -1,10 +1,10 @@
 import PillNav from "./PillNav";
 import React, { useState, useEffect } from "react";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { app } from "./firebase.js";
+import { app, auth } from "./firebase.js";
 
-const auth = getAuth(app);
+// const auth = getAuth(app);
 
 export default function NavBar() {
   const navigate = useNavigate();
@@ -27,14 +27,15 @@ export default function NavBar() {
       if (user) {
         setNavItems([
           { label: "Home", href: "/" },
-          { label: "About", href: "/about" },
-          { label: user.displayName || "Profile", href: `/${user.uid}` }, // safer than /:id
+          { label: "Feed Back", href: "/feedback" },
+          { label: "Learn More", href: "/learnmore" },
+          { label: "Analytics", href: `/${user.uid}/analytics` }, // safer than /:id
           { label: "Log Out", onClick: handleLogout }
         ]);
       } else {
         setNavItems([
           { label: "Home", href: "/" },
-          { label: "About", href: "/about" },
+          { label: "Learn More", href: "/learnmore" },
           { label: "Login", href: "/login" },
           { label: "SignUp", href: "/signup" },
         ]);
@@ -51,7 +52,7 @@ export default function NavBar() {
       activeHref="/"
       className="custom-nav"
       ease="power2.easeOut"
-      baseColor="#242424"
+      baseColor="transparent"
       pillColor="#3A3A3A"
       hoveredPillTextColor="#ffffff"
       pillTextColor="#FFFFFF"
