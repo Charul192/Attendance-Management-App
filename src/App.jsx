@@ -10,13 +10,13 @@ import Login from './assets/login.jsx';
 import Analytics from './assets/Analytics.jsx';
 import LearnMore from './assets/LearnMore.jsx';
 import AddSubject from './assets/AddSubjects.jsx';
+import Feedback from './assets/Feedback.jsx';
 
 // Firebase auth
 import { auth } from "./assets/partials/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
 function App() {
-  // `undefined` = still loading; null = known logged-out; object = logged-in
   const [user, setUser] = useState(undefined);
   const [isSignedUp, setIsSignedUp] = useState(false);
 
@@ -41,16 +41,18 @@ function App() {
 
 
   return (
+    <>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={user ? <AddSubject /> : <Home/>} />
-        <Route path="/about" element={<About />} />
         <Route path="/learnmore" element={<LearnMore />} />
         <Route path="/signup" element={<SignUp setIsSignedUp={setIsSignedUp} />} />
         <Route path="/login" element={<Login />} />
         <Route path="/:uid/analytics" element={<Analytics />} />
+        <Route path="/feedback" element={<Feedback />} />
       </Routes>
     </BrowserRouter>
+    </>
   );
 }
 

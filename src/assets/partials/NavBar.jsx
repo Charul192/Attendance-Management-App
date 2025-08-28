@@ -27,14 +27,15 @@ export default function NavBar() {
       if (user) {
         setNavItems([
           { label: "Home", href: "/" },
-          { label: "About", href: "/about" },
+          { label: "Feed Back", href: "/feedback" },
+          { label: "Learn More", href: "/learnmore" },
           { label: "Analytics", href: `/${user.uid}/analytics` }, // safer than /:id
           { label: "Log Out", onClick: handleLogout }
         ]);
       } else {
         setNavItems([
           { label: "Home", href: "/" },
-          { label: "About", href: "/about" },
+          { label: "Learn More", href: "/learnmore" },
           { label: "Login", href: "/login" },
           { label: "SignUp", href: "/signup" },
         ]);

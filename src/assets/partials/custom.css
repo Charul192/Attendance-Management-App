@@ -398,5 +398,5 @@ position: absolute;
 
 .ready{
   height: 300px;
-  background-color: rgba(6, 10, 54, 0.54);
+  background: linear-gradient(180deg, rgba(4, 5, 21, 0), black);
 }
