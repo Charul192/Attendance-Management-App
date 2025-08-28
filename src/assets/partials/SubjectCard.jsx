@@ -83,7 +83,8 @@ function bunk(subject){
   const absent = Number(subject.Absent ?? subject.absent ?? 0);
   if (classes <= 0) return 0;
   const result = ((classes *0.25) - absent);
-  return Math.floor(result);
+  if(result >= 0) return Math.floor(result);
+  else return 0;
 }
 
 const handleExtraClass = async() => {
