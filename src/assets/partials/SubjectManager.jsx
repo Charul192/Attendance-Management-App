@@ -169,6 +169,7 @@ export default function SubjectManager() {
 
   return (
     <div style={styles.container}>
+    <div style={styles.addBox}>
       <h2 style={styles.title}>Add Subject & Classes</h2>
 
       {showForm ? (
@@ -181,6 +182,7 @@ export default function SubjectManager() {
           </button>
         </div>
       )}
+      </div>
 
       <div style={styles.listHeader}>
         <h3 style={styles.savedHeading}>Saved Subjects ({entries.length})</h3>
@@ -316,7 +318,6 @@ function SubjectList({ entries, onDelete }) {
   );
 }
 
-/* inline styles using CSS variables for theme consistency */
 const styles = {
   container: {
     maxWidth: 760,
@@ -324,7 +325,7 @@ const styles = {
     padding: 18,
     borderRadius: 12,
     boxShadow: "0 8px 20px rgba(66, 66, 112, 0.65)",
-    background: "linear-gradient(180deg, var(--card-bg), rgba(255, 255, 255, 0.94))",
+    background: "linear-gradient(180deg, var(--card-bg), rgba(241, 234, 234, 0.94))",
     border: "1px solid var(--outline)",
     color: "var(--text)",
     fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial",
@@ -402,7 +403,7 @@ const styles = {
     padding: 12,
     borderRadius: 10,
     border: "1px solid rgba(255,255,255,0.03)",
-    background: "linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00))",
+    background: "linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.06))",
     color: "var(--text)",
   },
   cardLeft: {},
@@ -417,4 +418,12 @@ const styles = {
     color: "var(--accent)",
     cursor: "pointer",
   },
+  addBox: {
+  padding: 20,
+  borderRadius: 12,
+  marginBottom: 12,
+  background: "linear-gradient(180deg, #20242bff 0%, #0c0e12ff 100%)",
+  border: "1px solid rgba(255,255,255,0.04)",
+  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.02), 0 10px 24px rgba(6,8,20,0.6)", 
+},
 };
