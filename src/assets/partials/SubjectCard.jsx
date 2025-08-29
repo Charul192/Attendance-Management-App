@@ -108,7 +108,7 @@ const bunkClasses = bunk(subject);
 const pct = calculateFraction(subject);
 
   return (
-    <PixelCard variant="blue" className="subject-card">
+    <PixelCard variant="blue"  className="subject-card">
       <h3>{subject.Code ?? subject.code ?? "Untitled"}</h3>
       <p>Classes: {localClasses}</p>
       <p>Present: {subject.Present ?? 0}</p>
