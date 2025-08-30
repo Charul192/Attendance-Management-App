@@ -8,7 +8,7 @@ export default function Footer() {
         <p style={{ color: "#cfc4c4ff", fontSize: "18px", fontWeight: "750" }}>
           BunkSmart
         </p>
-        <p style={{ color: "#cfc4c4aa", marginTop: "-20px" }}>
+        <p style={{ color: "#cfc4c4aa", marginTop: "-1.4rem" }}>
           Built with ❤️ for better attendance
         </p>
       </div>

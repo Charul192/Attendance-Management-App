@@ -379,21 +379,22 @@ position: absolute;
   z-index: 1;   /* Children (text/components) upar show ho */
 }
 
+/*footer css*/
 .footer{
     background-color: #000;
     display: flex;
-    height: 170px;
+    height: 10.625rem;
     justify-content: space-evenly;
 }
 
 .foot-left{
     text-align: left;
-    padding-top: 40px;
+    padding-top: 2.5rem;
 }
 
 .foot-right{
     text-align: right;
-    margin-top: 60px;
+    margin-top: 3.75rem;
 }
 
 .ready{
