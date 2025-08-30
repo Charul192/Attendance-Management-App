@@ -74,33 +74,33 @@ export default function Login() {
     }
   };
 
-  // Forgot password handler
-  const handlePasswordReset = async () => {
-    setResetErr("");
-    setResetSuccess("");
+  // // Forgot password handler
+  // const handlePasswordReset = async () => {
+  //   setResetErr("");
+  //   setResetSuccess("");
 
-    if (!resetEmail) {
-      setResetErr("Please enter your email first.");
-      return;
-    }
+  //   if (!resetEmail) {
+  //     setResetErr("Please enter your email first.");
+  //     return;
+  //   }
 
-    setResetLoading(true);
-    try {
-      await sendPasswordResetEmail(auth, resetEmail);
-      setResetSuccess("Password reset email sent. Check your inbox (and spam).");
-    } catch (error) {
-      console.error("Reset error:", error);
-      // Friendly message mapping (simple)
-      const msg = error?.code
-        ? (error.code === "auth/user-not-found"
-            ? "No user found with that email."
-            : error.message)
-        : "Could not send reset email.";
-      setResetErr(msg);
-    } finally {
-      setResetLoading(false);
-    }
-  };
+  //   setResetLoading(true);
+  //   try {
+  //     await sendPasswordResetEmail(auth, resetEmail);
+  //     setResetSuccess("Password reset email sent. Check your inbox (and spam).");
+  //   } catch (error) {
+  //     console.error("Reset error:", error);
+  //     // Friendly message mapping (simple)
+  //     const msg = error?.code
+  //       ? (error.code === "auth/user-not-found"
+  //           ? "No user found with that email."
+  //           : error.message)
+  //       : "Could not send reset email.";
+  //     setResetErr(msg);
+  //   } finally {
+  //     setResetLoading(false);
+  //   }
+  // };
 
   return (
     <div className="signin-page">
@@ -156,19 +156,19 @@ export default function Login() {
             </button>
 
             {/* Open inline reset modal instead of navigating */}
-            <button
+            {/* <button
               type="button"
               className="ghost-link"
               onClick={() => setShowReset(true)}
             >
               Forgot password?
-            </button>
+            </button> */}
           </div>
         </form>
       </div>
 
       {/* --- Reset Password Modal --- */}
-      {showReset && (
+      {/* {showReset && (
         <div className="modal-overlay" role="dialog" aria-modal="true" aria-label="Reset password">
           <div className="reset-modal" ref={modalRef}>
             <h3>Reset your password</h3>
@@ -214,7 +214,7 @@ export default function Login() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

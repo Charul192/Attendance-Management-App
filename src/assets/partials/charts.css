@@ -1,18 +1,132 @@
-.doughtnuts{
-    align-items: center;
+/* charts.css — dark-friendly, compact spacing, smaller donuts/bars */
+
+:root{
+  --bg-card: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  --text-muted: #9aa3b2;
+  --muted-2: #cbd5e1;
+  --present: #22c55e;
+  --absent: #dc2626;
+  --remaining: #475569;
+  --panel-shadow: rgba(6,8,20,0.12);
 }
 
-.subjectchart{
-    display: flex;
-    align-items: center;
-    margin: 50px;
+/* container + extra padding */
+.charts-root {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: #e6eef8;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  padding: 12px; /* added padding so charts don't touch edges */
 }
 
-.overall{
-    margin: 20px;
+/* small extra padding utility */
+.chart-padding { padding-top: 6px; padding-bottom: 18px; }
+
+.charts-header {
+  display:flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+  color: var(--text-muted);
+}
+.charts-header .meta { font-size: 13px; }
+
+/* overall row - smaller by default */
+.overall-row {
+  display: grid;
+  grid-template-columns: minmax(220px, 320px) 1fr;
+  gap: 18px;
+  align-items: start;
+  margin-bottom: 18px;
 }
 
-.overallDough{
-    display: flex;
-    align-items: center;
+/* card base with extra inner padding */
+.padded-card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 8px 24px var(--panel-shadow);
+  border: 1px solid rgba(255,255,255,0.03);
+}
+
+/* slightly smaller doughnut wrapper */
+.overall-dough {
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.smaller-dough { max-width: 260px; aspect-ratio: 1/1; }
+
+/* overall stats */
+.overall-stats {
+  display:flex;
+  justify-content:center;
+  gap: 12px;
+  align-items:center;
+  margin-top: 10px;
+  color: var(--muted-2);
+  font-size: 13px;
+}
+.overall-stats .dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:middle; }
+.overall-stats .present { background: var(--present); }
+.overall-stats .absent { background: var(--absent); }
+.overall-stats .remaining { background: var(--remaining); }
+
+/* bar wrapper a bit shorter */
+.bar-wrap { width: 100%; aspect-ratio: 16 / 7; min-height: 160px; }
+.shorter-bar { max-height: 300px; }
+
+/* subject cards grid - more compact */
+.subjectchart.condensed-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 14px;
+  align-items: start;
+  margin-top: 14px;
+}
+
+/* each mini card */
+.subject-card.small-card {
+  padding: 10px;
+  min-height: 160px;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid rgba(255,255,255,0.03);
+  box-shadow: 0 8px 18px rgba(6,8,20,0.06);
+}
+.sub-title { margin:6px 0; color: #fff; font-size: 14px; text-align:center; }
+.sub-meta { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; text-align:center; }
+
+/* mini doughnut sizing */
+.mini-dough.smaller-mini { width: 100%; aspect-ratio: 1 / 1; max-width: 160px; }
+
+/* make canvases fill wrappers */
+.overall-dough canvas,
+.bar-wrap canvas,
+.mini-dough canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* small states */
+.loading, .empty { color: var(--text-muted); padding: 18px; text-align: center; }
+
+/* responsive breakpoints */
+@media (max-width: 980px) {
+  .overall-row { grid-template-columns: 1fr; }
+  .bar-wrap { aspect-ratio: 16 / 9; }
+  .smaller-dough { max-width: 220px; }
+}
+@media (max-width: 520px) {
+  .overall-dough { max-width: 220px; }
+  .bar-wrap { min-height: 180px; }
+  .mini-dough.smaller-mini { max-width: 140px; }
 }

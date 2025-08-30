@@ -31,6 +31,7 @@ export default function Home() {
     <div className="home2">
       <NavBar /><br/><br/>
       <br/><br/><br/><br/><br/>
+      <div className="content">
       <Logo/>
       <br/>
       <br/>
@@ -40,7 +41,7 @@ export default function Home() {
       <br/><br/>
       <button style={{marginRight: "70px", fontSize: "1.30rem"}} onClick={() => navigate('/SignUp')}>Start Tracking Today</button>
       <button style={{marginLeft: "70px", fontSize: "1.30rem"}}  onClick={() => navigate('/learnmore')}>Learn More</button>
-      <NotificationPrompt />
+      {/* <NotificationPrompt /> */}
       <br/>
       <br/>
       <br/>
@@ -49,6 +50,7 @@ export default function Home() {
       </div>
       <NeedToKnow/>
       <Ready/>
+      </div>
       <Footer />
     </>
   );

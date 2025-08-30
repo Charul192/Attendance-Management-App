@@ -45,7 +45,7 @@
 .signup-wrap{
   width: min(860px, 92%);
   max-width: 920px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.141), rgba(255, 255, 255, 0.047));
   border-radius: 16px;
   padding: 34px;
   backdrop-filter: blur(8px) saturate(140%);
@@ -226,7 +226,7 @@
 .signin-wrap{
   width: min(860px, 92%);
   max-width: 920px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.164), rgba(255, 255, 255, 0.048));
   border-radius: 16px;
   padding: 34px;
   backdrop-filter: blur(8px) saturate(140%);
@@ -410,4 +410,8 @@
   font-family:'Times New Roman', Times, serif ;
   color: #ffffffd1;
   font-size: 40px;
+}
+
+.content{
+  padding: 2rem;
 }

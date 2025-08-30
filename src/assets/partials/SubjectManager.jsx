@@ -346,7 +346,7 @@ const styles = {
     padding: 18,
     borderRadius: 12,
     boxShadow: "0 8px 20px rgba(66, 66, 112, 0.65)",
-    background: "linear-gradient(180deg, var(--card-bg), rgba(241, 234, 234, 0.94))",
+    background: "linear-gradient(180deg, var(--card-bg), rgba(255, 255, 255, 0.2))",
     border: "1px solid var(--outline)",
     color: "var(--text)",
     fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial",
