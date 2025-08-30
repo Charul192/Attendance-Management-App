@@ -1,3 +1,4 @@
+// SubjectManager.jsx
 import React, { useState, useEffect } from "react";
 import {
   getFirestore,
@@ -14,7 +15,8 @@ import { onAuthStateChanged } from "firebase/auth";
 const firestore = getFirestore(app);
 
 export default function SubjectManager() {
-  // entries store objects with shape: { id, code, classes, percentage, savedAt }
+  // entries store objects with shape:
+  // { id, code, classes, percentage, Present, Absent, savedAt }
   const [entries, setEntries] = useState(() => {
     try {
       const raw = localStorage.getItem("subjects_v1");
@@ -46,17 +48,22 @@ export default function SubjectManager() {
   useEffect(() => {
     let mounted = true;
     const loadFromFirestore = async () => {
-      if (!currentUid) return;
+      if (!currentUid) {
+        setEntries((prev) => prev); // no-op
+        return;
+      }
       setLoading(true);
       try {
         const snap = await getDocs(collection(firestore, "users", currentUid, "subjects"));
         const list = snap.docs.map((d) => {
-          const data = d.data();
+          const data = d.data() || {};
           return {
             id: d.id,
             code: data.Code ?? data.code ?? "",
             classes: Number(data.Classes ?? data.classes ?? 0),
-            percentage: Number(data.percentage ?? 0),
+            Present: Number(data.Present ?? data.present ?? 0),
+            Absent: Number(data.Absent ?? data.absent ?? 0),
+            percentage: Number(data.percentage ?? data.Percentage ?? 0),
             savedAt: data.savedAt ?? new Date().toISOString(),
           };
         });
@@ -76,17 +83,14 @@ export default function SubjectManager() {
     };
   }, [currentUid]);
 
-  // normalize helper
-  const normalize = (s) => (s || "").trim().toUpperCase();
-
   // create a subject under users/{uid}/subjects and return firestore id
-  // now accepts `percentage` from user and writes it to the doc
-  const makeSubCollection = async (code, classes, percentage) => {
+  // accepts `percentage` and optional initial `classes`
+  const makeSubCollection = async (code, percentage = 0, classes = 0) => {
     const uid = currentUid;
     if (!uid) throw new Error("User not signed in");
     const docRef = await addDoc(collection(firestore, "users", uid, "subjects"), {
       Code: code,
-      Classes: classes,
+      Classes: Number(classes ?? 0),
       Present: 0,
       Absent: 0,
       percentage: Number(percentage ?? 0),
@@ -139,7 +143,8 @@ export default function SubjectManager() {
   const handleAddMore = () => setShowForm(true);
 
   const handleClearAll = async () => {
-    if (!window.confirm("Clear all saved subjects? This will remove them locally and from server. Proceed?")) return;
+    if (!window.confirm("Clear all saved subjects? This will remove them locally and from server. Proceed?"))
+      return;
 
     const uid = currentUid;
     const old = entries;
@@ -173,7 +178,7 @@ export default function SubjectManager() {
   return (
     <div style={styles.container}>
       <div style={styles.addBox}>
-        <h2 style={styles.title}>Add Subject & Classes</h2>
+        <h2 style={styles.title}>Add Subject & Percentage</h2>
 
         {showForm ? (
           <SubjectForm onSave={handleSave} makeSubCollection={makeSubCollection} />
@@ -206,14 +211,12 @@ export default function SubjectManager() {
 /* Subject form component */
 function SubjectForm({ onSave, makeSubCollection }) {
   const [code, setCode] = useState("");
-  const [classes, setClasses] = useState("");
   const [percentage, setPercentage] = useState(""); // new input (0-100)
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
   const reset = () => {
     setCode("");
-    setClasses("");
     setPercentage("");
     setError("");
   };
@@ -223,15 +226,10 @@ function SubjectForm({ onSave, makeSubCollection }) {
     setError("");
 
     const trimmedCode = (code || "").trim();
-    const num = Number(classes);
     const pct = Number(percentage);
 
     if (!trimmedCode) {
       setError("Subject code required.");
-      return;
-    }
-    if (classes === "" || Number.isNaN(num) || num <= 0) {
-      setError("Enter a valid number of classes (positive).");
       return;
     }
     if (percentage === "" || Number.isNaN(pct) || pct < 0 || pct > 100) {
@@ -242,8 +240,17 @@ function SubjectForm({ onSave, makeSubCollection }) {
     setSaving(true);
     try {
       // create document and get firestore id (passes percentage)
-      const newId = await makeSubCollection(trimmedCode, num, pct);
-      onSave({ id: newId, code: trimmedCode, classes: num, percentage: pct, savedAt: new Date().toISOString() });
+      const newId = await makeSubCollection(trimmedCode, pct, 0);
+      const entry = {
+        id: newId,
+        code: trimmedCode,
+        classes: 0,
+        Present: 0,
+        Absent: 0,
+        percentage: pct,
+        savedAt: new Date().toISOString(),
+      };
+      onSave(entry);
       reset();
     } catch (err) {
       console.error("Failed to save subject:", err);
@@ -263,17 +270,6 @@ function SubjectForm({ onSave, makeSubCollection }) {
           onChange={(e) => setCode(e.target.value)}
           placeholder="e.g. MATH101"
           autoComplete="off"
-        />
-      </label>
-
-      <label style={styles.label}>
-        Number of classes
-        <input
-          style={styles.input}
-          value={classes}
-          onChange={(e) => setClasses(e.target.value)}
-          placeholder="e.g. 42"
-          inputMode="numeric"
         />
       </label>
 
@@ -321,7 +317,7 @@ function SubjectList({ entries, onDelete }) {
           <div style={styles.cardLeft}>
             <div style={styles.cardTitle}>{e.code}</div>
             <div style={styles.cardMeta}>
-              {e.classes} classes • {e.percentage ?? 0}% •{" "}
+              {Number(e.percentage ?? 0)}% •{" "}
               {new Date(e.savedAt).toLocaleString(undefined, {
                 dateStyle: "short",
                 timeStyle: "short",
@@ -339,6 +335,7 @@ function SubjectList({ entries, onDelete }) {
   );
 }
 
+/* styles object stays the same as you provided (kept for brevity) */
 const styles = {
   container: {
     maxWidth: 760,
@@ -361,7 +358,7 @@ const styles = {
     marginBottom: 12,
   },
   label: { display: "flex", flexDirection: "column", fontSize: 13, color: "var(--muted)" },
-input: {
+  input: {
     marginTop: 6,
     padding: "0.625rem 0.75rem",
     fontSize: 14,
