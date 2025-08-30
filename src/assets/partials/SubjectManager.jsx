@@ -14,7 +14,7 @@ import { onAuthStateChanged } from "firebase/auth";
 const firestore = getFirestore(app);
 
 export default function SubjectManager() {
-  // entries store objects with shape: { id: <firestore-id>, code, classes, savedAt }
+  // entries store objects with shape: { id, code, classes, percentage, savedAt }
   const [entries, setEntries] = useState(() => {
     try {
       const raw = localStorage.getItem("subjects_v1");
@@ -56,6 +56,7 @@ export default function SubjectManager() {
             id: d.id,
             code: data.Code ?? data.code ?? "",
             classes: Number(data.Classes ?? data.classes ?? 0),
+            percentage: Number(data.percentage ?? 0),
             savedAt: data.savedAt ?? new Date().toISOString(),
           };
         });
@@ -79,7 +80,8 @@ export default function SubjectManager() {
   const normalize = (s) => (s || "").trim().toUpperCase();
 
   // create a subject under users/{uid}/subjects and return firestore id
-  const makeSubCollection = async (code, classes) => {
+  // now accepts `percentage` from user and writes it to the doc
+  const makeSubCollection = async (code, classes, percentage) => {
     const uid = currentUid;
     if (!uid) throw new Error("User not signed in");
     const docRef = await addDoc(collection(firestore, "users", uid, "subjects"), {
@@ -87,6 +89,7 @@ export default function SubjectManager() {
       Classes: classes,
       Present: 0,
       Absent: 0,
+      percentage: Number(percentage ?? 0),
       savedAt: new Date().toISOString(),
       createdAt: serverTimestamp(),
       createdBy: uid,
@@ -169,19 +172,19 @@ export default function SubjectManager() {
 
   return (
     <div style={styles.container}>
-    <div style={styles.addBox}>
-      <h2 style={styles.title}>Add Subject & Classes</h2>
+      <div style={styles.addBox}>
+        <h2 style={styles.title}>Add Subject & Classes</h2>
 
-      {showForm ? (
-        <SubjectForm onSave={handleSave} makeSubCollection={makeSubCollection} />
-      ) : (
-        <div style={styles.savedNotice}>
-          <span>{message || "Saved — want to add more?"}</span>
-          <button style={styles.addMoreBtn} onClick={handleAddMore}>
-            Add more
-          </button>
-        </div>
-      )}
+        {showForm ? (
+          <SubjectForm onSave={handleSave} makeSubCollection={makeSubCollection} />
+        ) : (
+          <div style={styles.savedNotice}>
+            <span>{message || "Saved — want to add more?"}</span>
+            <button style={styles.addMoreBtn} onClick={handleAddMore}>
+              Add more
+            </button>
+          </div>
+        )}
       </div>
 
       <div style={styles.listHeader}>
@@ -204,12 +207,14 @@ export default function SubjectManager() {
 function SubjectForm({ onSave, makeSubCollection }) {
   const [code, setCode] = useState("");
   const [classes, setClasses] = useState("");
+  const [percentage, setPercentage] = useState(""); // new input (0-100)
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
   const reset = () => {
     setCode("");
     setClasses("");
+    setPercentage("");
     setError("");
   };
 
@@ -219,21 +224,26 @@ function SubjectForm({ onSave, makeSubCollection }) {
 
     const trimmedCode = (code || "").trim();
     const num = Number(classes);
+    const pct = Number(percentage);
 
     if (!trimmedCode) {
       setError("Subject code required.");
       return;
     }
-    if (!classes || Number.isNaN(num) || num <= 0) {
+    if (classes === "" || Number.isNaN(num) || num <= 0) {
       setError("Enter a valid number of classes (positive).");
+      return;
+    }
+    if (percentage === "" || Number.isNaN(pct) || pct < 0 || pct > 100) {
+      setError("Enter a valid percentage (0–100).");
       return;
     }
 
     setSaving(true);
     try {
-      // create document and get firestore id
-      const newId = await makeSubCollection(trimmedCode, num);
-      onSave({ id: newId, code: trimmedCode, classes: num, savedAt: new Date().toISOString() });
+      // create document and get firestore id (passes percentage)
+      const newId = await makeSubCollection(trimmedCode, num, pct);
+      onSave({ id: newId, code: trimmedCode, classes: num, percentage: pct, savedAt: new Date().toISOString() });
       reset();
     } catch (err) {
       console.error("Failed to save subject:", err);
@@ -263,6 +273,17 @@ function SubjectForm({ onSave, makeSubCollection }) {
           value={classes}
           onChange={(e) => setClasses(e.target.value)}
           placeholder="e.g. 42"
+          inputMode="numeric"
+        />
+      </label>
+
+      <label style={styles.label}>
+        Required Percentage (%)
+        <input
+          style={styles.input}
+          value={percentage}
+          onChange={(e) => setPercentage(e.target.value)}
+          placeholder="e.g. 75"
           inputMode="numeric"
         />
       </label>
@@ -300,7 +321,7 @@ function SubjectList({ entries, onDelete }) {
           <div style={styles.cardLeft}>
             <div style={styles.cardTitle}>{e.code}</div>
             <div style={styles.cardMeta}>
-              {e.classes} classes •{" "}
+              {e.classes} classes • {e.percentage ?? 0}% •{" "}
               {new Date(e.savedAt).toLocaleString(undefined, {
                 dateStyle: "short",
                 timeStyle: "short",
@@ -321,7 +342,7 @@ function SubjectList({ entries, onDelete }) {
 const styles = {
   container: {
     maxWidth: 760,
-    margin: "16px auto",
+    margin: "1rem auto",
     padding: 18,
     borderRadius: 12,
     boxShadow: "0 8px 20px rgba(66, 66, 112, 0.65)",
@@ -419,11 +440,11 @@ const styles = {
     cursor: "pointer",
   },
   addBox: {
-  padding: 20,
-  borderRadius: 12,
-  marginBottom: 12,
-  background: "linear-gradient(180deg, #20242bff 0%, #0c0e12ff 100%)",
-  border: "1px solid rgba(255,255,255,0.04)",
-  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.02), 0 10px 24px rgba(6,8,20,0.6)", 
-},
+    padding: 20,
+    borderRadius: 12,
+    marginBottom: 12,
+    background: "linear-gradient(180deg, #20242bff 0%, #0c0e12ff 100%)",
+    border: "1px solid rgba(255,255,255,0.04)",
+    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.02), 0 10px 24px rgba(6,8,20,0.6)",
+  },
 };
