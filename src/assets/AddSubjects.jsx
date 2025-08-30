@@ -10,6 +10,7 @@ import SubjectsPage from "./partials/SubjectsPage";
 import NotificationPrompt from './partials/NotificationPrompt';
 import QuoteWidget from './partials/quote';
 import Footer from './partials/footer';
+import myImg from './Picsart_25-08-28_15-21-20-126.png';
 
 import { onAuthStateChanged } from "firebase/auth";
 import { getToken } from 'firebase/messaging';
@@ -149,6 +150,7 @@ export default function AddSubject() {
     <>
       <NavBar onLogout={handleLogout} />
       <div className="name">
+        <img class="image" src={myImg} alt="My edited image" />
         <p>Hey, {user?.displayName ? user.displayName : 'there'}!!</p>
       </div>
 
