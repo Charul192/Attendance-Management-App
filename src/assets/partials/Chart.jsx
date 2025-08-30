@@ -1,10 +1,48 @@
 // SubjectCharts.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Doughnut, Bar } from "react-chartjs-2";
 import "chart.js/auto";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "./firebase";
-import './charts.css';
+import "./charts.css";
+
+const centerTextPlugin = {
+  id: "centerText",
+  beforeDraw: (chart) => {
+    if (!chart.config.options.plugins || !chart.config.options.plugins.centerText) return;
+    const { ctx, width, height } = chart;
+    ctx.save();
+    const cfg = chart.config.options.plugins.centerText;
+    const text = cfg.text ?? "";
+    const fontSize = cfg.fontSize ?? Math.round(Math.min(width, height) / 8);
+    ctx.font = `700 ${fontSize}px Inter, sans-serif`;
+    ctx.fillStyle = cfg.color ?? "#f8fafc";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(text, width / 2, height / 2);
+    ctx.restore();
+  },
+};
+
+// colors adjusted for dark background (muted but readable)
+const COLORS = {
+  present: "#22c55e",      // brighter green
+  presentDark: "#16a34a",
+  absent: "#dc2626",       // slightly deeper red
+  absentLight: "#ef4444",
+  remaining: "#475569",    // slate-blue for remaining
+  panel: "#0b0f12",
+};
+
+// map percentage to bar color (more nuanced)
+function pctToBarColor(pct) {
+  if (pct >= 85) return "#0ea5a4";
+  if (pct >= 75) return "#22c55e";
+  if (pct >= 60) return "#a3e635";
+  if (pct >= 45) return "#f59e0b";
+  if (pct >= 30) return "#fb923c";
+  return "#ef4444";
+}
 
 export default function SubjectCharts({ uid }) {
   const [loading, setLoading] = useState(true);
@@ -16,7 +54,6 @@ export default function SubjectCharts({ uid }) {
       setLoading(false);
       return;
     }
-
     let mounted = true;
     async function fetchSubjects() {
       setLoading(true);
@@ -24,29 +61,15 @@ export default function SubjectCharts({ uid }) {
         const colRef = collection(db, "users", uid, "subjects");
         const snap = await getDocs(colRef);
         if (!mounted) return;
-
         const items = snap.docs.map((d) => {
           const raw = d.data() || {};
-
-          // Fields from your SubjectManager:
-          // Code, Classes, Present, Absent
           const code = raw.Code ?? raw.code ?? `Subject ${d.id}`;
-          // prefer numeric conversions
           const presentCount = Number(raw.Present ?? raw.present ?? 0);
           const absentCount = Number(raw.Absent ?? raw.absent ?? 0);
           const classesField = Number(raw.Classes ?? raw.classes ?? 0);
-
-          // Determine total classes:
-          // - Prefer Classes field if >0
-          // - Otherwise fallback to present+absent
           let totalCount = classesField > 0 ? classesField : presentCount + absentCount;
-
-          // If totalCount still 0 but Present exists, set total = Present (avoid divide by zero)
           if (totalCount === 0 && presentCount > 0) totalCount = presentCount;
-
-          // Compute percent (guard divide by zero)
           const pct = totalCount > 0 ? Math.round((presentCount / totalCount) * 100) : 0;
-
           return {
             docId: d.id,
             code,
@@ -57,8 +80,6 @@ export default function SubjectCharts({ uid }) {
             raw,
           };
         });
-
-        console.log("Fetched subjects (normalized):", items);
         setSubjects(items);
       } catch (err) {
         console.error("Failed to load subjects:", err);
@@ -67,31 +88,33 @@ export default function SubjectCharts({ uid }) {
         if (mounted) setLoading(false);
       }
     }
-
     fetchSubjects();
-    return () => {
-      mounted = false;
-    };
+    return () => (mounted = false);
   }, [uid]);
 
-  // Aggregates for overall charts
-  const totalPresent = subjects.reduce((s, x) => s + (x.presentCount || 0), 0);
-  const totalClasses = subjects.reduce((s, x) => s + (x.totalCount || 0), 0);
-  const totalAbsent = Math.max(0, totalClasses - totalPresent);
-
-  const barLabels = subjects.map((s) => s.code);
-  const barData = subjects.map((s) => s.pct);
+  const { totalPresent, totalClasses, totalAbsent, overallPct } = useMemo(() => {
+    const tp = subjects.reduce((s, x) => s + (x.presentCount || 0), 0);
+    const tc = subjects.reduce((s, x) => s + (x.totalCount || 0), 0);
+    const ta = Math.max(0, tc - tp);
+    const op = tc > 0 ? Math.round((tp / tc) * 100) : 0;
+    return { totalPresent: tp, totalClasses: tc, totalAbsent: ta, overallPct: op };
+  }, [subjects]);
 
   const doughnutData = {
-    labels: ["Present", "Absent"],
+    labels: ["Present", "Absent", "Remaining"],
     datasets: [
       {
-        data: [totalPresent, totalAbsent],
-        backgroundColor: ["#16a34a", "#ef4444"],
-        hoverBackgroundColor: ["#22c55e", "#f87171"],
+        data: [totalPresent, totalAbsent, Math.max(0, totalClasses - totalPresent - totalAbsent)],
+        backgroundColor: [COLORS.present, COLORS.absent, COLORS.remaining],
+        hoverBackgroundColor: [COLORS.presentDark, COLORS.absentLight, "#64748b"],
+        borderWidth: 0,
       },
     ],
   };
+
+  const barLabels = subjects.map((s) => s.code);
+  const barData = subjects.map((s) => s.pct);
+  const barColors = barData.map((v) => pctToBarColor(v));
 
   const barChartData = {
     labels: barLabels,
@@ -99,100 +122,109 @@ export default function SubjectCharts({ uid }) {
       {
         label: "Attendance %",
         data: barData,
-        backgroundColor: barData.map((v) => (v >= 75 ? "#16a34a" : v >= 50 ? "#f59e0b" : "#ef4444")),
+        backgroundColor: barColors,
+        borderRadius: 6,
       },
     ],
   };
 
+  // responsive, smaller sizes
   const barOptions = {
+    responsive: true,
+    maintainAspectRatio: true,
+    aspectRatio: 2.4, // a bit shorter than before
+    interaction: { mode: "index", intersect: false },
     scales: {
       y: {
         beginAtZero: true,
         max: 100,
-        ticks: { callback: (v) => `${v}%` },
+        ticks: { callback: (v) => `${v}%`, color: "#9aa3b2", font: { size: 11 } },
+        grid: { color: "rgba(255,255,255,0.03)" },
+      },
+      x: {
+        ticks: { color: "#9aa3b2", font: { size: 11 } },
+        grid: { display: false },
       },
     },
     plugins: {
-      tooltip: { callbacks: { label: (ctx) => `${ctx.parsed.y}%` } },
+      legend: { display: false },
+      tooltip: { callbacks: { label: (ctx) => ` ${ctx.parsed.y}%` } },
     },
-    maintainAspectRatio: false,
   };
 
   const doughnutOptions = {
+    responsive: true,
+    maintainAspectRatio: true,
+    aspectRatio: 1,
+    cutout: "72%", // thinner ring
     plugins: {
-      tooltip: { callbacks: { label: (ctx) => `${ctx.label}: ${ctx.raw}` } },
-      legend: { position: "bottom" },
+      legend: {
+        position: "bottom",
+        labels: { color: "#9aa3b2", usePointStyle: true, padding: 12, boxWidth: 10 },
+      },
+      centerText: { text: `${overallPct}%`, fontSize: 22, color: "#e6eef8" },
+      tooltip: { callbacks: { label: (ctx) => `${ctx.label}: ${ctx.parsed}` } },
     },
-    maintainAspectRatio: false,
   };
 
   return (
-    <div style={{ display: "grid", gap: 20 }}>
-      <div style={{ fontSize: 13, color: "#9aa3b2" }}>
-        {/* <strong>UID:</strong> {uid ?? "not set"} • */} <strong>Subjects:</strong> {subjects.length}
+    <div className="charts-root chart-padding">
+      <div className="charts-header">
+        <div className="meta"><strong>Subjects:</strong> {subjects.length}</div>
+        <div className="meta"><strong>Overall:</strong> {overallPct}% ({totalPresent}/{totalClasses})</div>
       </div>
 
       {loading ? (
-        <div>Loading charts…</div>
+        <div className="loading">Loading charts…</div>
       ) : subjects.length === 0 ? (
-        <div>No subjects found.</div>
+        <div className="empty">No subjects found.</div>
       ) : (
         <>
-          {/* Overall charts */}
-          <div style={{ display: "flex", gap: 20, flexWrap: "wrap", alignItems: "stretch" }}>
-            <div style={{ flex: "0 0 320px", height: 320 }} className="overall">
-              <h4 style={{ margin: "8px 0" }}>Overall Presence</h4>
-              <div style={{ height: 260 }} className="overallDough">
-                <Doughnut data={doughnutData} options={doughnutOptions} />
+          <div className="overall-row">
+            <div className="overall-card padded-card">
+              <h4>Overall Attendance</h4>
+              <div className="overall-dough smaller-dough">
+                <Doughnut data={doughnutData} options={doughnutOptions} plugins={[centerTextPlugin]} />
               </div>
-              <div style={{ textAlign: "center", marginTop: 8 }}>
-                <small>
-                  {totalPresent} present • {totalAbsent} absent • {totalClasses} total
-                </small>
+              <div className="overall-stats">
+                <span className="dot present" /> {totalPresent} present
+                <span className="dot absent" /> {totalAbsent} absent
+                <span className="dot remaining" /> {Math.max(0, totalClasses - totalPresent - totalAbsent)} remaining
               </div>
             </div>
 
-            <div style={{ flex: "1 1 480px", minWidth: 300, height: 320 }}>
-              <h4 style={{ margin: "8px 0" }}>Attendance % per Subject</h4>
-              <div style={{ height: 260 }}>
+            <div className="bar-card padded-card">
+              <h4>Attendance % per Subject</h4>
+              <div className="bar-wrap shorter-bar">
                 <Bar data={barChartData} options={barOptions} />
               </div>
             </div>
           </div>
 
-          {/* Per-subject cards */}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 20 }} className="subjectchart">
+          <div className="subjectchart condensed-grid">
             {subjects.map((s) => {
+              const remaining = Math.max(0, s.totalCount - s.presentCount - s.absentCount);
               const subjectData = {
-                labels: ["Present", "Absent", "Left Classes"],
+                labels: ["Present", "Absent", "Remaining"],
                 datasets: [
                   {
-                    data: [s.presentCount, Math.max(0, s.absentCount), Math.max(0, s.totalCount)],
-                    backgroundColor: ["#16a34a", "#ef4444", "#243575ff"],
+                    data: [s.presentCount, s.absentCount, remaining],
+                    backgroundColor: [COLORS.present, COLORS.absent, COLORS.remaining],
+                    hoverBackgroundColor: [COLORS.presentDark, COLORS.absentLight, "#64748b"],
+                    borderWidth: 0,
                   },
                 ],
               };
 
               return (
-                <div
-                  className="DoughtNuts"
-                  key={s.docId}
-                  style={{
-                    flex: "0 0 240px",
-                    height: 280,
-                    background: "rgba(255,255,255,0.03)",
-                    borderRadius: 12,
-                    padding: 10,
-                    boxSizing: "border-box",
-                  }}
-                >
-                  <h4 style={{ margin: "6px 0", textAlign: "center", fontSize: 16 }}>{s.code}</h4>
-                  <div style={{ fontSize: 11, color: "#9aa3b2", textAlign: "center", marginBottom: 6 }}>
-                    {s.presentCount}/{s.totalCount} classes • {s.pct}%
-                  </div>
-
-                  <div style={{ height: 150 }}>
-                    <Doughnut data={subjectData} options={{ maintainAspectRatio: false }} />
+                <div className="subject-card padded-card small-card" key={s.docId}>
+                  <h5 className="sub-title">{s.code}</h5>
+                  <div className="sub-meta">{s.presentCount}/{s.totalCount} • {s.pct}%</div>
+                  <div className="mini-dough smaller-mini">
+                    <Doughnut
+                      data={subjectData}
+                      options={{ maintainAspectRatio: true, aspectRatio: 1, cutout: "68%", plugins: { legend: { display: false } } }}
+                    />
                   </div>
                 </div>
               );
