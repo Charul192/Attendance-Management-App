@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <div className="footer">
       <div className="foot-left">
-        <p style={{ color: "#cfc4c4ff", fontSize: "18px", fontWeight: "750" }}>
+        <p style={{ color: "#cfc4c4ff", fontSize: "1.125rem", fontWeight: "750" }}>
           BunkSmart
         </p>
         <p style={{ color: "#cfc4c4aa", marginTop: "-1.4rem" }}>

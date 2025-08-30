@@ -16,8 +16,9 @@ export default function LearnMore(){
 return(
 <>
 <NavBar />
-
+<div className="img">
 <img class="image" src={myImg} alt="My edited image" />
+</div>
 <section className="hero-section">
 <p className="hero-text">Record attendance in seconds, automate reporting, and<br/> monitor participation trends — built for educators and administrators<br/> who want to save time and act on data.</p>
 </section>
