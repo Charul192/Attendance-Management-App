@@ -100,7 +100,10 @@ color: #eaeaea;
 }
 
 .image{
-    margin-top: 4rem;
-    height:12rem;
-    width: 12rem;
+  display: block;
+  margin: 4rem auto 0;
+  width: 12rem;
+  height: 12rem;
+  object-fit: cover;
+  border-radius: 8px;
 }

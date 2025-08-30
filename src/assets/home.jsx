@@ -39,8 +39,8 @@ export default function Home() {
       <Tag/>
       <br/>
       <br/><br/>
-      <button style={{marginRight: "70px", fontSize: "1.30rem"}} onClick={() => navigate('/SignUp')}>Start Tracking Today</button>
-      <button style={{marginLeft: "70px", fontSize: "1.30rem"}}  onClick={() => navigate('/learnmore')}>Learn More</button>
+      <button className="homebut" onClick={() => navigate('/SignUp')}>Start Tracking Today</button>
+      <button className="homebut" onClick={() => navigate('/learnmore')}>Learn More</button>
       {/* <NotificationPrompt /> */}
       <br/>
       <br/>

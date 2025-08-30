@@ -10,7 +10,7 @@ import { PiStarFourFill } from "react-icons/pi";
 export default function NeedToKnow() {
   return (
     <>
-      <p style={{ fontFamily: "Inter, sans-serif", fontSize: "40px" }}>
+      <p style={{ fontFamily: "Inter, sans-serif", fontSize: "40px", margin:"2rem" }}>
         Everything You Need To Know
       </p>
       <div className="features">
