@@ -361,9 +361,9 @@ const styles = {
     marginBottom: 12,
   },
   label: { display: "flex", flexDirection: "column", fontSize: 13, color: "var(--muted)" },
-  input: {
+input: {
     marginTop: 6,
-    padding: "10px 12px",
+    padding: "0.625rem 0.75rem",
     fontSize: 14,
     borderRadius: 8,
     border: "1px solid var(--outline)",
